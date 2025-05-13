@@ -1,0 +1,274 @@
+.font1{
+    font-size: 9rem;
+    color: #DB0916 !important;
+}
+
+.font2{
+    font-size: 2.5rem;
+}
+
+.font3{
+    color: #78829D;
+}
+
+.tbr_auth--left .tbr_auth--401 {
+    background-image: url("../svg/illustrations/401.svg");
+    background-size: 80% 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.tbr_auth--left .tbr_auth--403 {
+    background-image: url("../svg/illustrations/403.svg");
+    background-size: 80% 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.tbr_auth--left .tbr_auth--404 {
+    background-image: url("../svg/illustrations/404.svg");
+    background-size: 80% 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.tbr_auth--left .tbr_auth--405 {
+    background-image: url("../svg/illustrations/405.svg");
+    background-size: 80% 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.tbr_auth--left .tbr_auth--419 {
+    background-image: url("../svg/illustrations/419.svg");
+    background-size: 80% 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.tbr_auth--left .tbr_auth--429 {
+    background-image: url("../svg/illustrations/429.svg");
+    background-size: 80% 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.tbr_auth--left .tbr_auth--500 {
+    background-image: url("../svg/illustrations/500.svg");
+    background-size: 80% 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.tbr_auth--left .tbr_auth--503 {
+    background-image: url("../svg/illustrations/503.svg");
+    background-size: 80% 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.tbr_auth--left .tbr_auth--ip-banned {
+    background-image: url("../svg/illustrations/ip-banned.svg");
+    background-size: 80% 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.tbr_auth--left .tbr_auth--database-not-found {
+    background-image: url("../svg/illustrations/database-not-found.svg");
+    background-size: 80% 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.tbr_auth--mobile-401 {
+    position: absolute;
+    background-color: var(--auth-bg);
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    display: none;
+    background-image: url("../svg/illustrations/401.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center 20px;
+    transition: all 0.3s ease;
+}
+
+.tbr_auth--mobile-403 {
+    position: absolute;
+    background-color: var(--auth-bg);
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    display: none;
+    background-image: url("../svg/illustrations/403.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center 20px;
+    transition: all 0.3s ease;
+}
+
+.tbr_auth--mobile-404 {
+    position: absolute;
+    background-color: var(--auth-bg);
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    display: none;
+    background-image: url("../svg/illustrations/404.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center 20px;
+    transition: all 0.3s ease;
+}
+
+.tbr_auth--mobile-405 {
+    position: absolute;
+    background-color: var(--auth-bg);
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    display: none;
+    background-image: url("../svg/illustrations/405.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center 20px;
+    transition: all 0.3s ease;
+}
+
+.tbr_auth--mobile-419 {
+    position: absolute;
+    background-color: var(--auth-bg);
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    display: none;
+    background-image: url("../svg/illustrations/419.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center 20px;
+    transition: all 0.3s ease;
+}
+
+.tbr_auth--mobile-429 {
+    position: absolute;
+    background-color: var(--auth-bg);
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    display: none;
+    background-image: url("../svg/illustrations/429.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center 20px;
+    transition: all 0.3s ease;
+}
+
+.tbr_auth--mobile-500 {
+    position: absolute;
+    background-color: var(--auth-bg);
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    display: none;
+    background-image: url("../svg/illustrations/500.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center 20px;
+    transition: all 0.3s ease;
+}
+
+.tbr_auth--mobile-503 {
+    position: absolute;
+    background-color: var(--auth-bg);
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    display: none;
+    background-image: url("../svg/illustrations/503.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center 20px;
+    transition: all 0.3s ease;
+}
+
+.tbr_auth--mobile-ip-banned {
+    position: absolute;
+    background-color: var(--auth-bg);
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    display: none;
+    background-image: url("../svg/illustrations/ip-banned.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center 20px;
+    transition: all 0.3s ease;
+}
+
+.tbr_auth--mobile-database-not-found {
+    position: absolute;
+    background-color: var(--auth-bg);
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    display: none;
+    background-image: url("../svg/illustrations/database-not-found.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center 20px;
+    transition: all 0.3s ease;
+}
+
+@media screen and (max-width: 768px) {
+    .tbr_auth--wrapper {
+        padding: 0;
+        justify-content: center;
+    }
+
+    .tbr_auth--right {
+        padding-top: 70px;
+        padding-bottom: 70px;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+    }
+
+    .tbr_auth--mobile-401 {
+        display: block;
+    }
+    .tbr_auth--mobile-403 {
+        display: block;
+    }
+    .tbr_auth--mobile-405 {
+        display: block;
+    }
+    .tbr_auth--mobile-419 {
+        display: block;
+    }
+    .tbr_auth--mobile-429 {
+        display: block;
+    }
+    .tbr_auth--mobile-500 {
+        display: block;
+    }
+    .tbr_auth--mobile-503 {
+        display: block;
+    }
+    .tbr_auth--mobile-ip-banned {
+        display: block;
+    }
+    .tbr_auth--mobile-database-not-found {
+        display: block;
+    }
+}

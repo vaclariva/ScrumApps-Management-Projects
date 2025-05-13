@@ -1,0 +1,21 @@
+table.dataTable th {
+    vertical-align: middle;
+}
+
+table thead tr {
+    text-wrap: nowrap;
+}
+
+ul.pagination .page-item.active .page-link {
+    background-color: var(--tbr-primary) !important;
+}
+
+.paginate_button.disabled:hover {
+    cursor: not-allowed;
+}
+
+@media screen and (max-width: 768px) {
+    table tbody tr {
+        text-wrap: nowrap;
+    }
+}

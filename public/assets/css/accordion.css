@@ -1,0 +1,21 @@
+.accordion.tbr_accordion {
+    background-color: var(--tbr-bg-form);
+    border-radius: 8px;
+}
+
+.accordion-header {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* .accordion.tbr_accordion:has([aria-expanded="true"]) {
+    padding-bottom: 15px;
+} */
+
+.accordion.tbr_accordion .accordion-header .accordion-icon {
+    transform: rotate(0deg);
+}
+
+.accordion.tbr_accordion .accordion-header[aria-expanded="true"] .accordion-icon {
+    transform: rotate(180deg);
+}

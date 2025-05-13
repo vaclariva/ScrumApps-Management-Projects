@@ -1,0 +1,22 @@
+.card-body {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.card .card-content{
+    width: 230px;
+}
+
+.card .card-content:hover .hover-btn {
+    opacity: 1;
+    visibility: visible;
+}
+
+.hover-btn {
+    transition: 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}

@@ -1,0 +1,54 @@
+:root {
+    --tbr-primary: #db0916;
+    --tbr-primary-active: #BD040F;
+    --tbr-success: #17c653;
+    --tbr-danger: #f8285a;
+    --tbr-warning: #f6b100;
+    --tbr-warning-active: #DFA000;
+    --tbr-info-light: #F8F5FF;
+    --tbr-info-active: #5014D0;
+    --tbr-orange-active: #F15700;
+    --tbr-bg-form: #f5f8fa;
+    --tbr-label: #4b5675;
+    --text-color: #1e2129;
+    --tbr-placeholder: #aab4c8;
+    --tbr-placeholder-active: #7e8299;
+    --tbr-white: #ffffff;
+    --tbr-icon-color: #a1a5b7;
+    --tbr-bg-body: #f6f6f6;
+    --tbr-grey-700: #4b5675;
+    --tbr-bg-sidebar: #1e1e2d;
+    --tbr-fill-disabled: #f9f9f9;
+    --tbr-backdrop: rgba(0, 0, 0, 0.2);
+    --tbr-backdrop-zindex: 1056;
+    --tbr-backdrop-zindex-overlap: calc(var(--tbr-backdrop-zindex) + 1);
+    /* --tbr-divider: #F1F1F4; */
+    --tbr-divider: var(--bs-gray-300);
+
+    --tbr-light-danger: rgba(248, 40, 90, 0.1);
+    --tbr-light-success: rgba(23, 198, 83, 0.1);
+    --tbr-light-warning: rgba(246, 177, 0, 0.1);
+    --tbr-light-orange: rgba(241, 87, 0, 0.1);
+
+    /* Auth Variables */
+    --auth-bg: #b02932;
+    --dark-green: #38835a;
+
+    /* Metronic Variables */
+    --bs-app-header-base-bg-color: #ffffff;
+    --bs-text-primary: #2f80ed;
+    --bs-component-hover-color: var(--tbr-primary);
+    --bs-component-hover-bg: var(--tbr-light-danger);
+    --bs-component-active-bg: var(--tbr-primary);
+}
+
+[data-bs-theme="dark"] {
+    --tbr-bg-form: #111217;
+    --tbr-label: #a1a5b7;
+    --tbr-white: #0f1014;
+    --text-color: #f8f5ff;
+    --tbr-fill-disabled: #0f0f13;
+    --bs-app-header-base-bg-color: #1e1e2d;
+    --bs-app-header-minimize-bg-color: #1e1e2d;
+    --tbr-divider: rgb(241, 241, 244,0.2);
+}

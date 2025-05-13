@@ -1,0 +1,29 @@
+.icon-picker-dropdown {
+    width: 100%;
+    min-width: 435px;
+    overflow-y: auto;
+}
+
+@media (max-width: 991.98px) {
+    .icon-picker-dropdown {
+        min-width: 440px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .icon-picker-dropdown {
+        min-width: 340px;
+        margin-left: 0;
+        margin-right: 0;
+        border-radius: 0.5rem;
+    }
+}
+
+.btn-icon {
+    border: 1px solid #999;
+}
+
+.btn-icon:hover {
+    border-color: #555;
+    background-color: #f8f9fa;
+}

@@ -1,0 +1,15 @@
+<svg width="700" height="65" viewBox="0 0 700 65" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <mask id="mask0_1213_135939" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="700" height="65">
+        <path d="M0 0H700V45C700 56.0457 691.046 65 680 65H20C8.9543 65 0 56.0457 0 45V0Z" fill="#D9D9D9" />
+    </mask>
+    <g mask="url(#mask0_1213_135939)">
+        <ellipse opacity="0.05" cx="343.15" cy="117.372" rx="343.15" ry="117.372"
+            transform="matrix(0.999552 0.0299389 0.0299388 -0.999552 202.898 229.367)" fill="white" />
+        <ellipse opacity="0.05" cx="343.15" cy="117.372" rx="343.15" ry="117.372"
+            transform="matrix(0.985325 -0.170692 -0.170692 -0.985325 363.766 296.539)" fill="white" />
+        <ellipse opacity="0.05" cx="365.361" cy="124.969" rx="365.361" ry="124.969"
+            transform="matrix(0.992185 -0.124778 -0.124778 -0.992185 -247.906 306.344)" fill="white" />
+        <ellipse opacity="0.05" cx="365.361" cy="124.969" rx="365.361" ry="124.969"
+            transform="matrix(0.99148 0.130257 0.130257 -0.99148 -435 195.805)" fill="white" />
+    </g>
+</svg>
