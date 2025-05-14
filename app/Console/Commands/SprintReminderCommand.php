@@ -28,7 +28,7 @@ class SprintReminderCommand extends Command
 
             if ($productOwner) {
                 Mail::to($productOwner->email)->send(new SprintReminder($sprint));
-                Log::info("Email reminder sent to {$productOwner->email} for sprint '{$sprint->name}'");
+                Log::info("Email reminder sent to {$productOwner->email} for sprint '{$sprint->name}' - {$sprint->days_left} hari tersisa");
             }
         }
 

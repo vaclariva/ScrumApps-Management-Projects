@@ -28,10 +28,8 @@ class SprintReminder extends Mailable
 
     private function generateSubject()
     {
-        if ($this->daysLeft === 0) {
-            return "🚨 Sprint Berakhir Hari Ini!";
-        } elseif ($this->daysLeft < 0) {
-            return "⚠️ Sprint Gagal Diselesaikan!";
+        if ($this->daysLeft >= 0) {
+            return "🚨 Sprint Gagal Diselesaikan!";
         } else {
             return "⏳ Sprint Akan Berakhir dalam {$this->daysLeft} Hari";
         }

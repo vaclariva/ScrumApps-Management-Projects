@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class Sprint extends Model
 {
@@ -32,7 +33,13 @@ class Sprint extends Model
 
     public function getDaysLeftAttribute()
     {
-        return $this->end_date->diffInDays(now());
+        $now = now()->startOfDay();
+        $endDate = $this->end_date->startOfDay();
+
+        // Menghitung selisih hari tanpa menambahkan 1
+        $daysLeft = $endDate->diffInDays($now);
+
+        return $daysLeft;
     }
 
     public function scopeEndingSoon($query)
@@ -55,6 +62,7 @@ class Sprint extends Model
     public function shouldSendReminder()
     {
         $daysLeft = $this->getDaysLeftAttribute();
+        Log::info("Sprint {$this->id} status: {$this->status}, days left: $daysLeft");
         return in_array($daysLeft, [0, 1, 2, 3]) && $this->status === 'inactive';
     }
 }

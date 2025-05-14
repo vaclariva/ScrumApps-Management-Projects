@@ -25,7 +25,7 @@ class CalendarController extends Controller
             [
                 'title' => $project->name,
                 'start' => $project->start_date->format('Y-m-d'),
-                'color' => '#28a745',
+                'color' => '#ffc107',
                 'extendedProps' => [
                     'tooltip' => view('calendars.partials.tooltip', [
                         'type' => 'mulai-proyek',
@@ -37,7 +37,7 @@ class CalendarController extends Controller
             [
                 'title' => $project->name,
                 'start' => $project->end_date->format('Y-m-d'),
-                'color' => '#ffc107',
+                'color' => '#28a745',
                 'extendedProps' => [
                     'tooltip' => view('calendars.partials.tooltip', [
                         'type' => 'berakhir-proyek',
@@ -54,7 +54,7 @@ class CalendarController extends Controller
                 [
                     'title' => $sprint->name,
                     'start' => $sprint->start_date->format('Y-m-d'),
-                    'color' => '#007bff',
+                    'color' => '#ffc107',
                     'extendedProps' => [
                         'tooltip' => view('calendars.partials.tooltip', [
                             'type' => 'mulai-sprint',
@@ -66,7 +66,7 @@ class CalendarController extends Controller
                 [
                     'title' => $sprint->name,
                     'start' => $sprint->end_date->format('Y-m-d'),
-                    'color' =>'#dc3545',
+                    'color' =>'#28a745',
                     'extendedProps' => [
                         'tooltip' => view('calendars.partials.tooltip', [
                             'type' => 'berakhir-sprint',

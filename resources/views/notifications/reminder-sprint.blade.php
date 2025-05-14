@@ -14,7 +14,7 @@
             Anda adalah Product Owner dari proyek <strong>{{ $sprint->project->name }}</strong> dan saat ini sedang menjalankan sprint <strong>{{ $sprint->name }}</strong>.
         </p>
 
-        @if ($daysLeft > 0)
+        @if ($daysLeft < 0)
             <p>
                 Sprint ini akan berakhir dalam <strong>{{ $daysLeft }} hari</strong> pada tanggal <strong>{{ $sprint->end_date->format('d M Y') }}</strong>.
                 Silakan pastikan semua task pada sprint ini terselesaikan sebelum batas waktu tersebut.

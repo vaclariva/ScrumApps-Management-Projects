@@ -28,20 +28,12 @@
         <div class="card-body">
             <div class="calendar-legend d-flex gap-4 mb-4">
                 <div class="flex items-center gap-2">
-                    <i class="ki-solid ki-abstract-27 text-success fs-2"></i>
-                    <span>Proyek Mulai</span>
-                </div>
-                <div class="flex text-items-center gap-2">
                     <i class="ki-solid ki-abstract-27 text-warning fs-2"></i>
-                    <span>Proyek Berakhir</span>
+                    <span>Mulai</span>
                 </div>
                 <div class="flex text-items-center gap-2">
-                    <i class="ki-solid ki-abstract-27 text-primary fs-2"></i>
-                    <span>Sprint Mulai</span>
-                </div>
-                <div class="flex text-items-center gap-2">
-                    <i class="ki-solid ki-abstract-27 text-danger fs-2"></i>
-                    <span>Sprint Berakhir</span>
+                    <i class="ki-solid ki-abstract-27 text-success fs-2"></i>
+                    <span>Berakhir</span>
                 </div>
             </div>
             <div id="agenda-calendar"></div>

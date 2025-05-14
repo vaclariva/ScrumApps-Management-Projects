@@ -10,7 +10,7 @@ $(document).ready(function() {
 
         $('#teamId').val(teamId);
         $('#team_user').val(userId).trigger('change');
-        $('#team_role').val(teamRole);
+        $('#team_role').val(teamRole).trigger('change');;
 
         $('#modal_edit_teams').modal('show');
     });

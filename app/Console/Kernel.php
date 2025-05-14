@@ -23,7 +23,15 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('sprint:remind')->everyMinute();
-        Log::info('Sprint reminder schedule running...');
+    Log::info('Sprint reminder schedule running...');
+
+    $schedule->command('sprint:remind')
+        ->everyMinute()
+        ->before(function () {
+            Log::info('Sprint reminder started');
+        })
+        ->after(function () {
+            Log::info('Sprint reminder finished');
+        });
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ProjectController extends Controller
 {
@@ -40,6 +41,8 @@ class ProjectController extends Controller
             $data = $request->validated();
             $data['status'] = $data['status'] ?? 'hold';
             $project = Project::create($data);
+
+             Mail::to($project->user->email)->send(new \App\Mail\ProjectCreated($project));
 
             DB::commit();
 
@@ -115,6 +118,8 @@ class ProjectController extends Controller
             $project->delete();
 
             DB::commit();
+
+            Mail::to($project->user->email)->send(new \App\Mail\ProjectRemoved($project));
 
             return response()->json([
                 'message' => trans('Berhasil dihapus.'),

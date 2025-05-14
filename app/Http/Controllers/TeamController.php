@@ -8,6 +8,7 @@ use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\Facades\DataTables;
 
 class TeamController extends Controller
@@ -54,7 +55,9 @@ class TeamController extends Controller
                     ]);
                 })
                 ->editColumn('role', function (Team $team) {
-                    return $team->role ?? '-';
+                    return view('teams.partials.datatable-role', [
+                        'team' => $team,
+                        'role' => $team->role ?? '-']);
                 })
                 ->addColumn('actions', function (Team $team) {
                     return view('teams.partials.datatable-actions', ['url_delete' => route('teams.destroy', $team->id)]);
@@ -130,6 +133,8 @@ class TeamController extends Controller
 
             $team = Team::create($data);
 
+            Mail::to($team->user->email)->send(new \App\Mail\TeamMemberAdded($team));
+
             DB::commit();
 
             return response()->json([
@@ -200,6 +205,8 @@ class TeamController extends Controller
             $team->delete();
 
             DB::commit();
+
+            Mail::to($team->user->email)->send(new \App\Mail\TeamMemberRemoved($team));
 
             return response()->json([
                 'message' => trans('Berhasil dihapus.'),

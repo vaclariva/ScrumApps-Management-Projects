@@ -26,10 +26,13 @@
                         </div>
                         <div class="form-group mb-8 align-items-center">
                             <label for="team_role" class="h6 tbr_font--weight-bold d-block">Peran</label>
-                            <input id="team_role" type="text" class="tbr_form form-control" name="role" placeholder="Masukkan Peran Member" />
-                            <span class="form-text text-muted text-justify">
-                                * Peran berupa UI/UX, BackEnd, FrontEnd, FullStack, atau Quality Assurance.
-                            </span>
+                            <select id="team_role" class="tbr_form form-select form-select-solid" name="role" data-control="select2" data-placeholder="Pilih Peran" data-hide-search="true">
+                                <option value="ui/ux" selected>UI/UX</option>
+                                <option value="backend" selected>BackEnd</option>
+                                <option value="frontend" selected>FrontEnd</option>
+                                <option value="fullstack" selected>FullStack</option>
+                                <option value="quality_assurance" selected>Quality Assurance</option>
+                            </select>
                         </div>
 
                         <div class="d-flex justify-content-end">
