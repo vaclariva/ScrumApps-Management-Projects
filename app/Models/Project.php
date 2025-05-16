@@ -51,6 +51,10 @@ class Project extends Model
     {
         return $this->hasMany(Team::class);
     }
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
     public function productOwner()
     {
         return $this->belongsTo(User::class, 'user_id');

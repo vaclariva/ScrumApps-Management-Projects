@@ -18,6 +18,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css" rel="stylesheet" />
+        <link href="assets/css/style.bundle.css" rel="stylesheet" type="text/css"/>
 
         {{-- Vendors CSS --}}
         <link rel="stylesheet" href="{{ asset('metronic/assets/plugins/global/plugins.bundle.css') }}">
@@ -109,7 +110,13 @@
         <script src="{{ asset('metronic/assets/plugins/global/plugins.bundle.js') }}"></script>
         <script src="{{ asset('metronic/assets/js/scripts.bundle.js') }}"></script>
         <script src="{{ asset('metronic/assets/plugins/custom/ckeditor/ckeditor-classic.bundle.js') }}"></script>
+        <script src="assets/js/scripts.bundle.js"></script>
         <script src="https://unpkg.com/jkanban@1.3.1/dist/jkanban.min.js"></script>
+        <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+        <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+        <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+        <script src="https://cdn.amcharts.com/lib/5/radar.js"></script>
+        <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
 
 
         {{-- Assets JS --}}
