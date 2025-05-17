@@ -15,6 +15,17 @@ var KTJKanbanDemoColor = function() {
             boards: [{
                     'id': '_todo',
                     'title': 'To Do',
+                    'class': 'primary',
+                    'item': [{
+                            'title': '<span class="fw-bold">You can drag me too</span>',
+                        },
+                        {
+                            'title': '<span class="fw-bold">Buy Milk</span>',
+                        }
+                    ]
+                }, {
+                    'id': '_inprocess',
+                    'title': 'In Process',
                     'class': 'warning',
                     'item': [{
                             'title': '<span class="fw-bold">You can drag me too</span>',
@@ -26,42 +37,29 @@ var KTJKanbanDemoColor = function() {
                         }
                     ]
                 }, {
-                    'id': '_inprocess',
-                    'title': 'In Process',
-                    'class': 'primary',
-                    'item': [{
-                            'title': '<span class="fw-bold">You can drag me too</span>',
-                            'class': 'light-primary',
-                        },
-                        {
-                            'title': '<span class="fw-bold">Buy Milk</span>',
-                            'class': 'light-primary',
-                        }
-                    ]
-                }, {
                     'id': '_working',
                     'title': 'Working',
-                    'class': 'success',
+                    'class': 'info',
                     'item': [{
                             'title': '<span class="fw-bold">Do Something!</span>',
-                            'class': 'light-success',
+                            'class': 'light-info',
                         },
                         {
                             'title': '<span class="fw-bold">Run?</span>',
-                            'class': 'light-success',
+                            'class': 'light-info',
                         }
                     ]
                 }, {
                     'id': '_done',
                     'title': 'Done',
-                    'class': 'danger',
+                    'class': 'success',
                     'item': [{
                             'title': '<span class="fw-bold">All right</span>',
-                            'class': 'light-danger',
+                            'class': 'light-success',
                         },
                         {
                             'title': '<span class="fw-bold">Ok!</span>',
-                            'class': 'light-danger',
+                            'class': 'light-success',
                         }
                     ]
                 }

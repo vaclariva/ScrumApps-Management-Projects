@@ -19,6 +19,7 @@ class BacklogController extends Controller
      */
     public function index(Request $request)
     {
+        $activeIndex = $request->query('tab', 0);
         $projects = Project::with('user')->get();
         $users = User::where('role', 'ProductOwner')->get();
         $projectId = $request->query('project_id');
@@ -36,7 +37,38 @@ class BacklogController extends Controller
         ->latest()
         ->get();
 
-        return view('backlogs.index', compact('users','project', 'backlogs', 'sprints', 'checkBacklogs'));
+        return view('backlogs.index', compact('users','project', 'backlogs', 'sprints', 'checkBacklogs', 'activeIndex'));
+    }
+
+     /**
+     * Display a listing of backlogs grouped by sprint.
+     */
+    public function sprintGrouped(Request $request)
+    {
+        $activeIndex = $request->query('tab', 1);
+        $projectId = $request->query('project_id');
+        if (!$projectId) {
+            abort(404, 'Project ID tidak ditemukan');
+        }
+
+        $project = Project::findOrFail($projectId);
+        $users = User::where('role', 'ProductOwner')->get();
+        $backlogs = Backlog::where('project_id', $projectId)
+        ->latest()
+        ->get();
+        $sprints = Sprint::where('project_id', $projectId)->get();
+        $checkBacklogs = CheckBacklog::all();
+
+        // Kelompokkan backlog berdasarkan sprint
+        $backlogsGrouped = Backlog::where('project_id', $projectId)
+            ->with('sprint')
+            ->latest()
+            ->get()
+            ->groupBy(function ($backlog) {
+                return $backlog->sprint ? $backlog->sprint->name : 'Belum maemiliki Sprint';
+            });
+
+        return view('backlogs.backlog-grouped', compact('users', 'project', 'backlogsGrouped', 'sprints', 'checkBacklogs', 'backlogs', 'activeIndex'));
     }
 
     /**

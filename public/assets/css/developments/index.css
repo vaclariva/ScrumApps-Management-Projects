@@ -1,0 +1,60 @@
+/* Kanban Container */
+.kanban-container {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 20px;
+}
+
+/* Kanban Board */
+.kanban-board {
+    width: 370px;
+    background-color: #F8F9FA;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
+}
+
+/* Board Title */
+.kanban-title {
+    padding: 15px;
+    font-weight: 600;
+    background-color: #E9ECEF;
+    text-align: center;
+    border-bottom: 1px solid #DEE2E6;
+    border-radius: 12px 12px 0 0;
+}
+
+/* Board Items */
+.kanban-items {
+    padding: 10px;
+}
+
+/* Kanban Item */
+.kanban-item {
+    margin-bottom: 10px;
+    padding: 10px 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+/* Item Hover */
+.kanban-item:hover {
+    background-color: #f1f3f5;
+    transform: translateY(-2px);
+}
+
+/* Colors */
+.warning { background-color: #FFE8A1; }
+.primary { background-color: #C3DAFE; }
+.success { background-color: #B9FBC0; }
+.danger { background-color: #FED7D7; }
+
+.light-warning { background-color: #FFF3BF; }
+.light-primary { background-color: #D6E4FF; }
+.light-success { background-color: #D3F8E2; }
+.light-danger { background-color: #FFEEEE; }

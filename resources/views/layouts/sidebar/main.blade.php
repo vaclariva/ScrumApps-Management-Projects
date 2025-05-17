@@ -90,7 +90,7 @@
                     </div> --}}
 
                     {{-- Inventory --}}
-                    {{-- <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
+                    <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
                         <span class="menu-link">
                             <span class="menu-icon">
                                 <i class="ki-duotone ki-cube-2 fs-2">
@@ -118,7 +118,7 @@
                                 </a>
                             </div>
                         </div>
-                    </div> --}}
+                    </div>
 
                     {{-- Credit --}}
                     {{-- <div data-kt-menu-trigger="click" class="menu-item here menu-accordion coming-soon">

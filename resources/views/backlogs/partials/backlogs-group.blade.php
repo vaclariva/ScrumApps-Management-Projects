@@ -1,65 +1,123 @@
-@extends('layouts.app')
-@section('pageTitle', 'Proyek')
-@section('breadcrumb')
-    @include('include.default-breadcrumb', [
-        'breadcrumbs' => [
-            ['title' => 'Proyek', 'link' => ''],
-            ['title' => 'Detail', 'link' => ''],
-        ]
-    ])
-@endsection
-@section('sidebar')
-    @include('layouts.sidebar.sub-main')
-@endsection
-@push('blockhead')
-    <link rel="stylesheet" href="{{ asset('metronic/assets/plugins/custom/datatables/datatables.bundle.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/projects/index.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/projects/modal.css') }}">
-@endpush
+@php
+    $sprints = $sprints ?? collect();
+    $checkBacklogs = $checkBacklogs ?? [];
+@endphp
 
-@section('content')
-
-    @include('projects.partials.projects-detail')
-    <br>
-    @include('backlogs.partials.nav-tab', ['activeIndex' => 0])
-    <div class="card rounded-top-0">
-        <div class="card-header d-flex text-center">
-            <div class="flex-column">
-                <h3 class="card-title fw-semibold">Daftar Kelompok Backlog</h3>
-                <span class="text-gray-600 text-sm">
-                    Halaman ini digunakan untuk menyimpan daftar Backlog yang telah dikelompokkan berdasarkan Sprint pada proyek.
-                </span>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="d-flex flex-column flex-lg-row justify-content-lg-between gap-4 mb-8">
-                <a href="#" data-bs-toggle="modal" data-bs-target="#modal_create_sprints" anim="ripple" class="btn tbr_btn tbr_btn--primary d-flex flex-center gap-2">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path opacity="0.4" d="M17.5724 6.50367V6.50573V13.4891C17.5724 14.8566 17.1677 15.8581 16.5087 16.5171C15.8498 17.176 14.8482 17.5807 13.4807 17.5807H6.50573C5.13823 17.5807 4.1369 17.176 3.47806 16.5164C2.81911 15.8566 2.41406 14.8529 2.41406 13.4807V6.50573C2.41406 5.13822 2.81879 4.13666 3.47773 3.47773C4.13666 2.81879 5.13822 2.41406 6.50573 2.41406H13.4891C14.8567 2.41406 15.858 2.81885 16.5157 3.47739C17.1733 4.13578 17.5762 5.13663 17.5724 6.50367Z" fill="white" stroke="white" stroke-width="1.5"/>
-                        <mask id="path-2-inside-1_1796_18943" fill="white">
-                        <path d="M13.3307 9.3724H10.6224V6.66406C10.6224 6.3224 10.3391 6.03906 9.9974 6.03906C9.65573 6.03906 9.3724 6.3224 9.3724 6.66406V9.3724H6.66406C6.3224 9.3724 6.03906 9.65573 6.03906 9.9974C6.03906 10.3391 6.3224 10.6224 6.66406 10.6224H9.3724V13.3307C9.3724 13.6724 9.65573 13.9557 9.9974 13.9557C10.3391 13.9557 10.6224 13.6724 10.6224 13.3307V10.6224H13.3307C13.6724 10.6224 13.9557 10.3391 13.9557 9.9974C13.9557 9.65573 13.6724 9.3724 13.3307 9.3724Z"/>
-                        </mask>
-                        <path d="M13.3307 9.3724H10.6224V6.66406C10.6224 6.3224 10.3391 6.03906 9.9974 6.03906C9.65573 6.03906 9.3724 6.3224 9.3724 6.66406V9.3724H6.66406C6.3224 9.3724 6.03906 9.65573 6.03906 9.9974C6.03906 10.3391 6.3224 10.6224 6.66406 10.6224H9.3724V13.3307C9.3724 13.6724 9.65573 13.9557 9.9974 13.9557C10.3391 13.9557 10.6224 13.6724 10.6224 13.3307V10.6224H13.3307C13.6724 10.6224 13.9557 10.3391 13.9557 9.9974C13.9557 9.65573 13.6724 9.3724 13.3307 9.3724Z" fill="white"/>
-                        <path d="M10.6224 9.3724H9.1224V10.8724H10.6224V9.3724ZM9.3724 9.3724V10.8724H10.8724V9.3724H9.3724ZM9.3724 10.6224H10.8724V9.1224H9.3724V10.6224ZM10.6224 10.6224V9.1224H9.1224V10.6224H10.6224ZM13.3307 7.8724H10.6224V10.8724H13.3307V7.8724ZM12.1224 9.3724V6.66406H9.1224V9.3724H12.1224ZM12.1224 6.66406C12.1224 5.49397 11.1675 4.53906 9.9974 4.53906V7.53906C9.51064 7.53906 9.1224 7.15082 9.1224 6.66406H12.1224ZM9.9974 4.53906C8.8273 4.53906 7.8724 5.49397 7.8724 6.66406H10.8724C10.8724 7.15082 10.4842 7.53906 9.9974 7.53906V4.53906ZM7.8724 6.66406V9.3724H10.8724V6.66406H7.8724ZM9.3724 7.8724H6.66406V10.8724H9.3724V7.8724ZM6.66406 7.8724C5.49397 7.8724 4.53906 8.8273 4.53906 9.9974H7.53906C7.53906 10.4842 7.15082 10.8724 6.66406 10.8724V7.8724ZM4.53906 9.9974C4.53906 11.1675 5.49397 12.1224 6.66406 12.1224V9.1224C7.15082 9.1224 7.53906 9.51064 7.53906 9.9974H4.53906ZM6.66406 12.1224H9.3724V9.1224H6.66406V12.1224ZM7.8724 10.6224V13.3307H10.8724V10.6224H7.8724ZM7.8724 13.3307C7.8724 14.5008 8.8273 15.4557 9.9974 15.4557V12.4557C10.4842 12.4557 10.8724 12.844 10.8724 13.3307H7.8724ZM9.9974 15.4557C11.1675 15.4557 12.1224 14.5008 12.1224 13.3307H9.1224C9.1224 12.844 9.51064 12.4557 9.9974 12.4557V15.4557ZM12.1224 13.3307V10.6224H9.1224V13.3307H12.1224ZM10.6224 12.1224H13.3307V9.1224H10.6224V12.1224ZM13.3307 12.1224C14.5008 12.1224 15.4557 11.1675 15.4557 9.9974H12.4557C12.4557 9.51064 12.844 9.1224 13.3307 9.1224V12.1224ZM15.4557 9.9974C15.4557 8.8273 14.5008 7.8724 13.3307 7.8724V10.8724C12.844 10.8724 12.4557 10.4842 12.4557 9.9974H15.4557Z" fill="white" mask="url(#path-2-inside-1_1796_18943)"/>
-                    </svg>
-                    <span>Tambah</span>
-                </a>
-
-            </div>
-
+<div class="card shadow-sm mb-3">
+    <div class="card-header collapsible cursor-pointer rotate" data-bs-toggle="collapse" data-bs-target="#kt_docs_card_collapsible">
+        <h3 class="card-title">{{ $sprintName }}</h3>
+        <div class="card-toolbar rotate-180">
+            <i class="ki-duotone ki-down fs-1"></i>
         </div>
     </div>
+    <div id="kt_docs_card_collapsible" class="collapse show">
+        <div class="card-body">
+            @foreach ($backlogs as $backlog)
+                <div id="backlog_card_{{ $backlog->id }}" class="card shadow-sm mb-6" >
+                    <div class="card-header">
+                        <h3 class="card-title fs-5"> {{ $backlog->name }} </h3>
+                    </div>
+                    <div class="card-body" style="padding-top: 8px !important; padding-bottom: 8px !important;">
+                        <div class="d-flex flex-column flex-lg-row justify-content-lg-between">
+                            <div class="d-flex gap-5 align-items-center">
+                                @include('backlogs.partials.backlogs-priority')
+                                @if($backlog->description)
+                                    <i class="ki-duotone ki-text-align-justify-center fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                    </i>
+                                @endif
+                                @if ($backlog->sprint_id && $backlog->sprint)
+                                    <div class="d-flex align-items-center text-muted gap-1">
+                                        <i class="ki-duotone ki-time fs-2">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                        <span class="fs-7">{{ $backlog->sprint->name }}</span>
+                                    </div>
+                                @endif
+                                <div class="d-flex align-items-center">
+                                    <i class="ki-duotone ki-check-square text-success fs-2 gap-1">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                    <span class="text-success">3/3</span>
+                                </div>
+                                @if ($backlog->status === 'active')
+                                    <div class="d-flex align-items-center gap-1">
+                                        <i class="ki-duotone ki-medal-star text-success fs-2">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                            <span class="path3"></span>
+                                            <span class="path4"></span>
+                                        </i>
+                                        <span class="text-success">Selesai</span>
+                                    </div>
+                                @endif
+                                <div class="d-flex align-items-center">
+                                    @if ($project?->user)
+                                        <img src="{{ $project->user->photo_path ? asset($project->user->photo_path) : asset('assets/images/avatar.png') }}"
+                                            alt="{{ $project->user->name }}"
+                                            class="w-25px h-25px rounded-circle me-2 object-fit-cover">
+                                        <span class="text-muted fs-7">{{ $project->user->name }}</span>
+                                    @else
+                                        <img src="{{ asset('assets/images/avatar.png') }}"
+                                            alt="Tidak diketahui"
+                                            class="w-25px h-25px rounded-circle me-2 object-fit-cover">
+                                        <span class="text-muted fs-7">Tidak diketahui</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div>
+                                <button type="button"
+                                    class="btn btn-icon tbr_btn--primary rotate"
+                                    data-kt-menu-trigger="click"
+                                    data-kt-menu-placement="bottom-end"
+                                    data-kt-menu-offset="0px, 0px">
 
-    @include('projects.modal-edit')
-    @include('include.default-modal-delete')
-
-    @push('blockfoot')
-        <script src="{{ asset('metronic/assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
-        <script src="{{ asset('assets/js/default-datatable.js') }}"></script>
-        <script src="{{ asset('assets/js/ckeditor.js') }}"></script>
-        <script src="{{ asset('assets/js/default-delete.js') }}"></script>
-        <script src="{{ asset('assets/js/backlogs/index.js') }}"></script>
-        <script src="{{ asset('assets/js/projects/icons.js') }}"></script>
-        <script src="{{ asset('assets/js/projects/date-picker.js') }}"></script>
-    @endpush
-@endsection
+                                    <i class="ki-duotone ki-dots-circle-vertical tbr_text--primary fs-2qx rotate-90">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                    </i>
+                                </button>
+                                <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 fw-semibold w-200px mw-300px py-4 px-2"
+                                    data-kt-menu="true">
+                                    <div class="menu-item px-4">
+                                        <a href="#" class="menu-link px-3 bg-hover-light-secondary rounded btn-edit-backlog"
+                                            data-id="{{ $backlog->id }}"
+                                            data-name="{{ $backlog->name }}"
+                                            data-description="{{ $backlog->description }}"
+                                            data-priority="{{ $backlog->priority }}"
+                                            data-status="{{ $backlog->status }}"
+                                            data-sprint-id="{{ $backlog->sprint_id }}"
+                                            data-applicant="{{ $backlog->applicant }}"
+                                            data-project-id="{{ $backlog->project_id }}"
+                                            data-user-id="{{ $backlog->user_id }}"
+                                            data-user-name="{{ $project->user->name }}"
+                                            data-user-photo="{{ $project->user->photo_path }}"
+                                            data-check-backlogs='@json($backlog->checkBacklogs)'>
+                                            Edit Backlog
+                                        </a>
+                                    </div>
+                                    <div class="menu-item px-4">
+                                        <a href="{{ route('backlogs.duplicate') }}" class="menu-link px-3 bg-hover-light-secondary rounded">Duplikat Backlog</a>
+                                    </div>
+                                    <div class="menu-item px-4">
+                                        <a href="#" class="menu-link px-3 bg-hover-light-secondary rounded"
+                                        onclick="defaultDelete('{{ route('backlogs.destroy', $backlog->id) }}')">
+                                        Hapus Backlog
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</div>

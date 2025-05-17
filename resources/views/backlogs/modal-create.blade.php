@@ -87,13 +87,10 @@
                             </div>
                             <div class="col-lg-9">
                                 <select class="tbr_form form-select form-select-solid" name="sprint_id" data-control="select2" data-placeholder="Pilih Sprint" data-hide-search="true">
-                                    @if ($sprints->count())
-                                        @foreach ($sprints as $sprint)
-                                            <option value="{{ $sprint->id }}">{{ $sprint->name }}</option>
-                                        @endforeach
-                                    @else
-                                        <option value="" selected>Belum ada sprint di proyek ini</option>
-                                    @endif
+                                    <option value="" selected>Pilih Sprint</option>
+                                    @foreach ($sprints as $sprint)
+                                        <option value="{{ $sprint->id }}">{{ $sprint->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

@@ -48,15 +48,17 @@
             </div>
         </div>
         <div class="card-body">
-            <div id="list-backlogs">
-                @foreach ($backlogs as $backlog)
-                    @include('backlogs.partials.backlogs-card', [
-                        'backlog' => $backlog,
-                        'project' => $project,
-                        'sprints' => $sprints,
-                        'checkBacklogs' => $checkBacklogs,
-                    ])
-                @endforeach
+            <div class="tab-content" id="myTabContent">
+                <div id="list-backlogs">
+                    @foreach ($backlogs as $backlog)
+                        @include('backlogs.partials.backlogs-card', [
+                            'backlog' => $backlog,
+                            'project' => $project,
+                            'sprints' => $sprints,
+                            'checkBacklogs' => $checkBacklogs,
+                        ])
+                    @endforeach
+                </div>
             </div>
         </div>
     </div>

@@ -148,6 +148,7 @@ Route::middleware(['middleware' => 'banned.ip',
     Route::delete('/sprints/{sprint}', [SprintController::class, 'destroy'])->name('sprints.destroy');
 
     Route::get('/backlogs', [BacklogController::class, 'index'])->name('backlogs.index');
+    Route::get('/backlogs/sprint-grouped', [BacklogController::class, 'sprintGrouped'])->name('backlogs.sprint-grouped');
     Route::post('/backlogs', [BacklogController::class, 'store'])->name('backlogs.store');
     Route::match(['PUT', 'PATCH'], '/backlogs/{backlog}', [BacklogController::class, 'update'])->name('backlogs.update');
     Route::post('/backlogs/duplicate', [BacklogController::class, 'duplicate'])->name('backlogs.duplicate');
