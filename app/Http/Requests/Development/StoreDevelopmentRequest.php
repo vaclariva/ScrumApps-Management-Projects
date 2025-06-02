@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\CheckBacklog;
+namespace App\Http\Requests\Development;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -11,7 +11,7 @@ class StoreDevelopmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +21,13 @@ class StoreDevelopmentRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
+         return [
+            'name' => 'required|string|max:255',
+            'desc' => 'nullable|string',
+            'link' => 'nullable|url|max:255',
+            'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx,zip',
+            'status' => 'nullable|in:todo,in_progress,qa,done',
+            'project_id' => 'required|exists:projects,id',
         ];
     }
 }

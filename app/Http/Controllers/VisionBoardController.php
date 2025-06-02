@@ -111,6 +111,34 @@ class VisionBoardController extends Controller
     }
 
     /**
+    * Duplicate the specified resource.
+    */
+    public function duplicate(VisionBoard $visionBoard)
+    {
+        DB::beginTransaction();
+
+        try {
+            $newVisionBoard = $visionBoard->replicate();
+            $newVisionBoard->name = $visionBoard->name . ' - copy';
+            $newVisionBoard->push(); // Save the duplicated record
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Vision board berhasil diduplikat.',
+                'redirect' => url()->previous(),
+            ]);
+        } catch (\Throwable $th) {
+            info('Duplicate Error:', [$th]);
+            DB::rollBack();
+
+            return response()->json([
+                'message' => trans('http-statuses.500'),
+            ], 500);
+        }
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(VisionBoard $visionBoard)

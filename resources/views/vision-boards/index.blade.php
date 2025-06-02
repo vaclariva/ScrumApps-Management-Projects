@@ -84,6 +84,9 @@
                                         <span class="path1"></span>
                                         <span class="path2"></span>
                                     </i>
+                                    <a href="#" class="duplicate-button" data-id="{{ $visionBoard->id }}">
+                                        <i class="ki-duotone ki-copy fs-2"></i>
+                                    </a>
                                     <i class="ki-duotone ki-trash tbr_hover--opacity fs-1 me-5"
                                     onclick="event.stopPropagation(); event.preventDefault(); defaultDelete('{{ route('vision-boards.destroy', $visionBoard->id) }}')">
                                         <span class="path1"></span>
@@ -111,7 +114,7 @@
                                         Vision
                                         <span class="text-gray-600"> (Visi) </span>
                                     </span><br>
-                                    <div class="board-sub vision text-gray-600 px-5" style="text-align: justify;">{!! $visionBoard->vision !!}</div>
+                                    <div class="board-sub vision text-gray-600 px-5" style="text-align: justify;">{!! $visionBoard->vision ?? '-' !!}</div>
                                 </div>
                                 <div class="mb-5">
                                     <span class="px-2.5" style="font-weight: 500;">
@@ -122,7 +125,7 @@
                                         Target Group
                                         <span class="text-gray-600"> (Target Kelompok) </span>
                                     </span><br>
-                                    <div class="board-sub vision text-gray-600 px-5" style="text-align: justify;">{!! $visionBoard->target_group !!}</div>
+                                    <div class="board-sub vision text-gray-600 px-5" style="text-align: justify;">{!! $visionBoard->target_group ?? '-' !!}</div>
                                 </div>
                                 <div class="mb-5">
                                     <span class="px-2.5" style="font-weight: 500;">
@@ -133,7 +136,7 @@
                                         Needs
                                         <span class="text-gray-600"> (Kebutuhan) </span>
                                     </span><br>
-                                    <div class="board-sub vision text-gray-600 px-5" style="text-align: justify;">{!! $visionBoard->needs !!}</div>
+                                    <div class="board-sub vision text-gray-600 px-5" style="text-align: justify;">{!! $visionBoard->needs ?? '-' !!}</div>
                                 </div>
                                 <div class="mb-5">
                                     <span class="px-2.5" style="font-weight: 500;">
@@ -144,7 +147,7 @@
                                         Products
                                         <span class="text-gray-600"> (Produk) </span>
                                     </span><br>
-                                    <div class="board-sub vision text-gray-600 px-5" style="text-align: justify;">{!! $visionBoard->products !!}</div>
+                                    <div class="board-sub vision text-gray-600 px-5" style="text-align: justify;">{!! $visionBoard->products ?? '-' !!}</div>
                                 </div>
                                 <div class="mb-5">
                                     <span class="px-2.5" style="font-weight: 500;">
@@ -155,7 +158,7 @@
                                         Products
                                         <span class="text-gray-600"> (Produk) </span>
                                     </span><br>
-                                    <div class="board-sub vision text-gray-600 px-5" style="text-align: justify;">{!! $visionBoard->products !!}</div>
+                                    <div class="board-sub vision text-gray-600 px-5" style="text-align: justify;">{!! $visionBoard->products ?? '-' !!}</div>
                                 </div>
                                 <div class="mb-5">
                                     <span class="px-2.5" style="font-weight: 500;">
@@ -166,7 +169,7 @@
                                         Business Goals
                                         <span class="text-gray-600"> (Tujuan Bisnis) </span>
                                     </span><br>
-                                    <div class="board-sub vision text-gray-600 px-5" style="text-align: justify;">{!! $visionBoard->business_goals !!}</div>
+                                    <div class="board-sub vision text-gray-600 px-5" style="text-align: justify;">{!! $visionBoard->business_goals ?? '-' !!}</div>
                                 </div>
                                 <div class="mb-5">
                                     <span class="px-2.5" style="font-weight: 500;">
@@ -177,7 +180,7 @@
                                         Competitors
                                         <span class="text-gray-600"> (Pesaing) </span>
                                     </span><br>
-                                    <div class="board-sub vision text-gray-600 px-5" style="text-align: justify;">{!! $visionBoard->competitors !!}</div>
+                                    <div class="board-sub vision text-gray-600 px-5" style="text-align: justify;">{!! $visionBoard->competitors ?? '-' !!}</div>
                                 </div>
                             </div>
                         </div>
@@ -200,10 +203,11 @@
 
     @push('blockfoot')
         <script src="{{ asset('assets/js/ckeditor.js') }}"></script>
-        <script src="{{ asset('assets/js/default-delete.js') }}"></script>
         <script src="{{ asset('assets/js/vision-boards/index.js') }}"></script>
         <script src="{{ asset('assets/js/vision-boards/create.js') }}"></script>
         <script src="{{ asset('assets/js/vision-boards/edit.js') }}"></script>
+        <script src="{{ asset('assets/js/vision-boards/duplicate.js') }}"></script>
+        <script src="{{ asset('assets/js/default-delete.js') }}"></script>
         <script src="{{ asset('assets/js/projects/icons.js') }}"></script>
         <script src="{{ asset('assets/js/projects/date-picker.js') }}"></script>
     @endpush

@@ -166,9 +166,6 @@ function submitAjax({ el }) {
     });
 }
 
-
-
-// === save checklist backlog === //
 let currentBacklogId = null;
 let activeChecklistForm = null;
 
@@ -181,94 +178,7 @@ function successCallback(response) {
     showSuccessToast({ message: response?.message ?? "Success" });
 }
 
-$(document).ready(function () {
-    $('.btn-edit-backlog').on('click', function (e) {
-        e.preventDefault();
-        currentBacklogId = $(this).data('id');
-    });
-});
 
-// $(document).on('submit', '.form-checklist', function (e) {
-//     e.preventDefault();
-
-//     const $form = $(this);
-//     const text = $form.find('.checklist-editable').text().trim();
-//     console.log('Checklist Title:', text);
-//     if (text !== "") {
-//         submitAjax({ el: $form.find('button[type=submit]')[0] });
-//     } else {
-//         alert("Name is required!");
-//     }
-// });
-
-
-function showChecklistForm() {
-    $('.btn-add-checklist').addClass('d-none');
-
-    const $form = $($('.template-checklist-form').html()).appendTo('.checklist-forms');
-    $form.find('.backlog-id-field').val(currentBacklogId);
-
-    $form.find('.checklist-editable').focus();
-}
-
-function checklistSaved(response) {
-    showSuccessToast({ message: response?.message ?? "Checklist berhasil disimpan!" });
-    $('.btn-add-checklist').removeClass('d-none');
-
-    showChecklistForm();
-
-    setTimeout(() => {
-        $('.checklist-editable').last().focus();
-    }, 50);
-}
-
-function resetChecklistForm() {
-}
-
-$(document).on('click', '.btn-cancel-checklist', function () {
-    $(this).closest('.form-checklist').remove();
-    $('.btn-add-checklist').removeClass('d-none');
-});
-
-$(document).ready(function () {
-    // Fokus pada .checklist-editable
-    $(document).on('focusin', '.checklist-editable', function () {
-        $(this).closest('.form-checklist').find('.checklist-action-buttons').removeClass('d-none');
-        $('.btn-add-checklist').addClass('d-none');
-    });
-
-    // Fokus keluar dari .checklist-editable
-    $(document).on('focusout', '.checklist-editable', function () {
-        const $form = $(this).closest('.form-checklist');
-
-        setTimeout(function () {
-            if (!$form.has(document.activeElement).length) {
-                $form.find('.checklist-action-buttons').addClass('d-none');
-
-                const text = $form.find('.checklist-editable').text().trim();
-
-                const anyFormFocused = $('.form-checklist').toArray().some(f =>
-                    $(f).has(document.activeElement).length > 0
-                );
-
-                if (!anyFormFocused) {
-                    $('.btn-add-checklist').removeClass('d-none');
-                    $('.form-checklist').each(function () {
-                        const value = $(this).find('.checklist-editable').text().trim();
-                        if (value === "") {
-                            $(this).remove();
-                        }
-                    });
-                }
-            }
-        }, 100);
-    });
-});
-
-$(document).on('input', '.checklist-editable', function () {
-    const text = $(this).text().trim();
-    $(this).closest('.form-checklist').find('.checklist-hidden-title').val(text);
-});
 
 
 // === reset modal === //

@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header d-flex align-items-center">
-                <h3 class="modal-title">Tambah Sprint</h3>
+                <h3 class="modal-title">Edit Sprint</h3>
                 </button>
                 <i class="ki-duotone ki-cross me-3 fs-1" data-bs-dismiss="modal" style="cursor: pointer;">
                     <span class="path1"></span>
@@ -11,6 +11,7 @@
             </div>
             <div class="modal-body px-10 pt-10 pb-12">
                 <form
+                    id="editBacklogForm"
                     action="{{ route('backlogs.update', $backlog->id) }}"
                     method="POST"
                     class="tbr_main_form"
@@ -87,13 +88,10 @@
                             </div>
                             <div class="col-lg-9">
                                 <select class="tbr_form form-select form-select-solid" name="sprint_id" data-control="select2" data-placeholder="Pilih Sprint" data-hide-search="true">
-                                    @forelse ($sprints as $sprint)
-                                        <option value="{{ $sprint->id }}" {{ $sprint->id == $backlog->sprint_id ? 'selected' : '' }}>
-                                            {{ $sprint->name }}
-                                        </option>
-                                    @empty
-                                        <option value="" selected>Belum ada sprint di proyek ini</option>
-                                    @endforelse
+                                    <option value="" {{ old('sprint_id') === null ? 'selected' : '' }}>Pilih Sprint</option>
+                                    @foreach ($sprints as $sprint)
+                                        <option value="{{ $sprint->id }}">{{ $sprint->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -126,7 +124,7 @@
                                 <span class="text-muted fs-7">{{ $project->user->name }}</span>
                             </div>
                             <div class="d-flex justify-content-end">
-                                <button anim="ripple" type="button" onclick="submitAjax({el: this})" class="btn tbr_btn tbr_btn--primary">Simpan Data Backlog</button>
+                                <button anim="ripple" type="button" onclick="updateAjax({el: this})" class="btn tbr_btn tbr_btn--primary">Simpan Data Backlog</button>
                             </div>
                         </div>
                     </form>
@@ -139,40 +137,6 @@
                             <span class="text-gray-600">Isi formulir di bawah untuk menambah checklist backlog setelah menyimpan data backlog di atas.</span>
                         </div>
 
-                        {{-- @if (isset($checkBacklogs))
-                            @foreach ($checkBacklogs as $checkBacklog)
-                                @if ($checkBacklog->backlog_id === $backlog->id)
-                                    <form class="form-checklist d-flex flex-column gap-3 mb-3"
-                                        action="{{ route('check-backlog.update', $checkBacklog->id) }}"
-                                        method="POST"
-                                        data-success-callback="checklistSaved"
-                                        data-complete-callback="resetChecklistForm"
-                                        onsubmit="this.querySelector('.checklist-hidden-title').value = this.querySelector('.checklist-editable').innerText.trim();
-                                            event.preventDefault();
-                                            submitAjax({ el: this.querySelector('button[type=submit]') });">
-                                        @csrf
-                                        @method('PUT')
-                                        <input type="hidden" name="backlog_id" class="backlog-id-field" value="{{ $checkBacklog->backlog_id }}">
-                                        <div class="form-check checklist-item form-check-solid">
-                                            <input type="checkbox" name="status" class="form-check-input" {{ $checkBacklog->status ? 'checked' : '' }} />
-                                            <input type="hidden" name="name" class="checklist-hidden-title" value="{{ $checkBacklog->name }}" />
-                                            <div class="form-check-label checklist-editable"
-                                                contenteditable="true"
-                                                style="width: 100%; outline: none;"
-                                                onfocus="this.style.backgroundColor='#fff5f5'; this.style.borderRadius='0.475rem'; this.style.padding='0.5rem';"
-                                                onblur="this.style.backgroundColor=''; this.style.padding='0';">
-                                                {{ $checkBacklog->name }}
-                                            </div>
-                                        </div>
-                                        <div class="d-flex gap-3 checklist-action-buttons d-none" hidden>
-                                            <button type="submit" class="btn btn-sm tbr_btn tbr_btn--primary">Simpan</button>
-                                            <button type="button" class="btn btn-sm btn-secondary btn-cancel-checklist">Batal</button>
-                                        </div>
-                                    </form>
-                                @endif
-                            @endforeach
-                        @endif --}}
-
                         <div id="checklist-wrapper">
                             <div class="checklist-forms"></div>
                             <div class="btn-add-checklist mt-5">
@@ -182,29 +146,37 @@
                     </div>
 
                     <template class="template-checklist-form">
-                        <form class="form-checklist d-flex flex-column gap-3 mb-3"
+                        <form class="form-checklist d-flex flex-column gap-3 mb-3 ini edit"
                             action="{{ route('check-backlog.store') }}"
                             method="POST"
                             data-success-callback="checklistSaved"
                             data-complete-callback="resetChecklistForm"
+                            data-check-backlog-id="{{ $checkBacklog->id ?? '' }}"
                             onsubmit="document.querySelector('.checklist-hidden-title').value = document.querySelector('.checklist-editable').innerText.trim();
                                 event.preventDefault();
                                 submitAjax({ el: this.querySelector('button[type=submit]') });">
                             @csrf
-                            <input type="hidden" name="backlog_id" class="backlog-id-field" value="{{ $backlog->id }}">
+                            <input type="hidden" name="backlog_id" class="backlog-id-field" value="{{ $backlog->id ?? '' }}">
+                            <input type="hidden" name="id" class="checkBacklogId" value="{{ $backlog->id ?? '' }}">
                             <div class="form-check checklist-item form-check-solid">
-                                <input type="checkbox" name="status" class="form-check-input" />
+                                <input type="checkbox"
+                                    class="form-check-input checklist-status-toggle"
+                                    data-id="{{ $checkBacklog->id ?? '' }}"
+                                    {{ ($checkBacklog->status ?? '') === 'active' ? 'checked' : '' }}>
                                 <input type="hidden" name="name" class="checklist-hidden-title" />
                                 <div class="form-check-label checklist-editable"
                                     contenteditable="true"
+                                    spellcheck="false"
                                     style="width: 100%; outline: none;"
                                     onfocus="this.style.backgroundColor='#fff5f5'; this.style.borderRadius='0.475rem'; this.style.padding='0.5rem';"
                                     onblur="this.style.backgroundColor=''; this.style.padding='0';">
                                 </div>
                             </div>
-                            <div class="d-flex gap-3 checklist-action-buttons d-none" hidden>
-                                <button type="submit" class="btn btn-sm tbr_btn tbr_btn--primary">Simpan</button>
+                            <div class="d-flex gap-3 checklist-action-buttons">
+                                <button type="button" onclick="submitCheckbacklog({el: this})" class="btn btn-sm tbr_btn tbr_btn--primary btn-save-checklist">Tambah</button>
+                                <button type="button" onclick="updateCheckbacklog({el: this})" class="btn btn-sm tbr_btn tbr_btn--primary btn-update-checklist d-none">Simpan</button>
                                 <button type="button" class="btn btn-sm btn-secondary btn-cancel-checklist">Batal</button>
+                                <button type="button" onclick="deleteCheckbacklog({el: this})" class="btn btn-sm btn-secondary btn-delete-checklist d-none">Hapus</button>
                             </div>
                         </form>
                     </template>

@@ -9,6 +9,7 @@ use App\Models\CheckBacklog;
 use App\Models\Project;
 use App\Models\Sprint;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -97,7 +98,6 @@ class BacklogController extends Controller
                 'backlog' => $backlog,
                 'project' => $backlog->project,
             ])->render();
-
             return response()->json([
                 'message' => trans('http-statuses.201'),
                 'backlog' => $backlog,
@@ -151,12 +151,15 @@ class BacklogController extends Controller
         try {
             $data = $request->validated();
             $backlog->update($data);
+            $project = $backlog->project()->with('user')->first();
 
             DB::commit();
 
             return response()->json([
                 'message' => trans('http-statuses.201'),
                 'redirect' => url()->previous(),
+                'backlog' => $backlog,
+                'project' => $project,
             ]);
         } catch (\Throwable $th) {
             info('Update Error:', [$th]);
@@ -171,37 +174,27 @@ class BacklogController extends Controller
      /**
      * Duplicate the specified resource in storage.
      */
-    public function duplicate(StoreBacklogRequest $request)
+    public function duplicate(Request $request, $id)
     {
         DB::beginTransaction();
 
         try {
-            // Validasi data backlog
-            $validatedBacklog = $request->validated();
+            $original = Backlog::findOrFail($id);
 
-            // Tambahkan '-copy' pada nama backlog yang diduplikasi
-            $validatedBacklog['name'] = $validatedBacklog['name'] . '-copy';
+            $newBacklog = $original->replicate();
+            $newBacklog->name = $original->name . ' - copy';
+            $newBacklog->save();
 
-            // Buat backlog baru dengan data yang sudah diperbarui
-            $newBacklog = Backlog::create($validatedBacklog);
-
-            // Cek jika ada data checkBacklog
-            if ($request->has('check_backlog')) {
-                // Ambil data checkBacklog
-                $checkBacklogRequest = app()->make(StoreCheckBacklogRequest::class);
-                $checkData = $checkBacklogRequest->validated();
-
-                // Ganti backlog_id ke ID yang baru dibuat
-                $checkData['backlog_id'] = $newBacklog->id;
-
-                // Simpan checkBacklog
-                CheckBacklog::create($checkData);
+            if ($original->checkBacklog) {
+                $newCheck = $original->checkBacklog->replicate();
+                $newCheck->backlog_id = $newBacklog->id;
+                $newCheck->save();
             }
 
             DB::commit();
 
             return response()->json([
-                'message' => trans('http-statuses.201'),
+                'message' => 'Backlog berhasil diduplikat.',
                 'redirect' => url()->previous(),
             ]);
         } catch (\Throwable $th) {
@@ -212,6 +205,30 @@ class BacklogController extends Controller
                 'message' => trans('http-statuses.500'),
             ], 500);
         }
+    }
+
+    public function downloadPdf($id)
+    {
+        $backlog = Backlog::with('user', 'checkBacklogs', 'project')->findOrFail($id);
+        //$backlog = Backlog::findOrFail($id);
+        //dd($backlog->user);
+
+        $data = [
+            'productName' => $backlog->project->name ?? '-',
+            'applicant' => $backlog->applicant ?? '-',
+            'hariTanggal' => \Carbon\Carbon::parse($backlog->created_at)->translatedFormat('l, d F Y'),
+            'userStory' => $backlog->name,
+            'acceptanceCriteria' => $backlog->checkBacklogs,
+            'keterangan' => $backlog->description ?? '-',
+            'backlog' => $backlog,
+        ];
+
+        $pdf = Pdf::loadView('backlogs.partials.backlogs-pdf', $data)
+                ->setPaper('a4', 'portrait');
+
+        $filename = 'Backlog_' . str_replace(' ', '_', $backlog->name) . '.pdf';
+
+        return $pdf->download($filename);
     }
 
     /**

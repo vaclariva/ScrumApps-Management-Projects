@@ -20,6 +20,7 @@
 
 @section('content')
     @include('developments.modal-create')
+    @include('developments.modal-edit')
     @include('projects.modal-edit')
     @include('include.default-modal-delete')
     @include('projects.partials.projects-detail')
@@ -51,11 +52,18 @@
     </div>
 
     @push('blockfoot')
+        <script>
+            window.kanbanData = @json($tasks);
+            window.allTasksDetail = @json($allTasks);
+        </script>
         <script src="{{ asset('metronic/assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
         <script src="{{ asset('assets/js/default-datatable.js') }}"></script>
         <script src="{{ asset('assets/js/ckeditor.js') }}"></script>
         <script src="{{ asset('assets/js/default-delete.js') }}"></script>
         <script src="{{ asset('assets/js/developments/index.js') }}"></script>
+        <script src="{{ asset('assets/js/developments/create.js') }}"></script>
+        <script src="{{ asset('assets/js/developments/edit.js') }}"></script>
+        <script src="{{ asset('assets/js/developments/delete.js') }}"></script>
         <script src="{{ asset('assets/js/projects/icons.js') }}"></script>
         <script src="{{ asset('assets/js/projects/date-picker.js') }}"></script>
     @endpush

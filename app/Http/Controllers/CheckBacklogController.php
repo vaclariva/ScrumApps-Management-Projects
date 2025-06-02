@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CheckBacklog\StoreCheckBacklogRequest;
+use App\Http\Requests\CheckBacklog\StoreCheckBacklogUpdateRequest;
 use App\Models\Backlog;
 use App\Models\CheckBacklog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CheckBacklogController extends Controller
 {
@@ -44,9 +46,12 @@ class CheckBacklogController extends Controller
 
             DB::commit();
 
+            $backlogId = $checkBacklog->backlog->id;
+
             return response()->json([
                 'message' => trans('http-statuses.201'),
                 'redirect' => url()->previous(),
+                'backlog_id' => $backlogId,
                 'check_backlogs' => $checkBacklog->backlog->checkBacklogs,
             ]);
 
@@ -79,8 +84,9 @@ class CheckBacklogController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreCheckBacklogRequest $request, CheckBacklog $checkBacklog)
+    public function update(StoreCheckBacklogUpdateRequest $request, CheckBacklog $checkBacklog)
     {
+        Log::info('Update Request Data:', $request->all());
         DB::beginTransaction();
 
         try {
@@ -106,8 +112,26 @@ class CheckBacklogController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(CheckBacklog $checkBacklog)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            $checkBacklog->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'message' => trans('Berhasil dihapus.'),
+                'redirect' => url()->previous(),
+            ]);
+        } catch (\Throwable $th) {
+            info($th);
+            DB::rollBack();
+
+            return response()->json([
+                'message' => trans('http-statuses.500'),
+            ], 500);
+        }
     }
 }

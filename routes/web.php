@@ -139,6 +139,7 @@ Route::middleware(['middleware' => 'banned.ip',
     Route::post('/vision-boards', [VisionBoardController::class, 'store'])->name('vision-boards.store');
     Route::match(['PUT', 'PATCH'], '/vision-boards/{visionBoard}', [VisionBoardController::class, 'update'])->name('vision-boards.update');
     Route::get('/vision-boards/{visionBoard}', [VisionBoardController::class, 'show'])->name('vision-boards.show');
+    Route::post('/vision-boards/{visionBoard}/duplicate', [VisionBoardController::class, 'duplicate'])->name('vision-boards.duplicate');
     Route::delete('/vision-boards/{visionBoard}', [VisionBoardController::class, 'destroy'])->name('vision-boards.destroy');
 
     Route::get('/sprints', [SprintController::class, 'index'])->name('sprints.index');
@@ -151,13 +152,19 @@ Route::middleware(['middleware' => 'banned.ip',
     Route::get('/backlogs/sprint-grouped', [BacklogController::class, 'sprintGrouped'])->name('backlogs.sprint-grouped');
     Route::post('/backlogs', [BacklogController::class, 'store'])->name('backlogs.store');
     Route::match(['PUT', 'PATCH'], '/backlogs/{backlog}', [BacklogController::class, 'update'])->name('backlogs.update');
-    Route::post('/backlogs/duplicate', [BacklogController::class, 'duplicate'])->name('backlogs.duplicate');
+    Route::post('/backlogs/{id}/duplicate', [BacklogController::class, 'duplicate'])->name('backlogs.duplicate');
     Route::delete('/backlogs/{backlog}', [BacklogController::class, 'destroy'])->name('backlogs.destroy');
 
     Route::post('/check-backlog', [CheckBacklogController::class, 'store'])->name(name: 'check-backlog.store');
     Route::match(['PUT', 'PATCH'], '/checkBacklogs/{checkBacklog}', [CheckBacklogController::class, 'update'])->name('check-backlog.update');
+    Route::get('/backlogs/{backlog}/download', [BacklogController::class, 'downloadPdf'])->name('backlogs.download');
+    Route::delete('/checkBacklogs/{checkBacklog}', [CheckBacklogController::class, 'destroy'])->name('check-backlog.destroy');
 
     Route::get('/developments', [DevelopmentController::class, 'index'])->name('developments.index');
+    Route::post('/developments', [DevelopmentController::class, 'store'])->name('developments.store');
+    Route::match(['PUT', 'PATCH'],'/developments/{development}', [DevelopmentController::class, 'update'])->name('developments.update');
+    Route::post('/developments/{id}/update-status', [DevelopmentController::class, 'updateStatus']);
+    Route::delete('/developments/{development}', [DevelopmentController::class, 'destroy'])->name('developments.destroy');
 
     Route::get('/calendars', [CalendarController::class, 'index'])->name('calendars.index');
 

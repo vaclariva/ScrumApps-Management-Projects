@@ -67,11 +67,13 @@
 
     @push('blockfoot')
         <script src="{{ asset('assets/js/ckeditor.js') }}"></script>
-        <script src="{{ asset('assets/js/default-delete.js') }}"></script>
         <script src="{{ asset('assets/js/default-textarea.js') }}"></script>
         <script src="{{ asset('assets/js/backlogs/index.js') }}"></script>
         <script src="{{ asset('assets/js/backlogs/create.js') }}"></script>
         <script src="{{ asset('assets/js/backlogs/edit.js') }}"></script>
+        <script src="{{ asset('assets/js/backlogs/duplicate.js') }}"></script>
+        <script src="{{ asset('assets/js/default-delete.js') }}"></script>
+        <script src="{{ asset('assets/js/backlogs/checklist.js') }}"></script>
         <script src="{{ asset('assets/js/check-backlog/create.js') }}"></script>
         <script src="{{ asset('assets/js/projects/icons.js') }}"></script>
         <script src="{{ asset('assets/js/projects/date-picker.js') }}"></script>

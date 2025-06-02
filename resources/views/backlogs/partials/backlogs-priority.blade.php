@@ -18,4 +18,4 @@
     }
 @endphp
 
-<span class="{{ $badgeClass }}">• {{ $priorityText }}</span>
+<span class="{{ $badgeClass }} BacklogPriorityBadge" data-backlog-id="{{ $backlog->id }}">• {{ $priorityText }}</span>

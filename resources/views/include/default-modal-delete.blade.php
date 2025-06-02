@@ -1,4 +1,4 @@
-<div class="modal fade" id="tbr_modal_delete" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+<div class="modal fade" id="tbr_modal_delete" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true" style="z-index: 1090;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body px-20 pt-10 pb-12">
