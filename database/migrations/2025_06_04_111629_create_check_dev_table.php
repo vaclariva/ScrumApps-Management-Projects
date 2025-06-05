@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('check_backlogs', function (Blueprint $table) {
+        Schema::create('check_dev', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('backlog_id');
-            $table->text('name')->nullable();
-            $table->enum('status', ['active', 'inactive'])->default('inactive');
+            $table->foreignId('dev_id')->constrained('developments')->onDelete('cascade');
+            $table->string('name');
+            $table->string('category');
+            $table->string('status');
             $table->timestamps();
-            $table->foreign('backlog_id')->references('id')->on('backlogs')->onDelete('cascade');
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('check_backlogs');
+        Schema::dropIfExists('check_dev');
     }
 };

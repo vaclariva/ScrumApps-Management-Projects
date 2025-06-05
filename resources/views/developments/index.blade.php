@@ -21,6 +21,7 @@
 @section('content')
     @include('developments.modal-create')
     @include('developments.modal-edit')
+    @include('developments.partials.default-modal-delete')
     @include('projects.modal-edit')
     @include('include.default-modal-delete')
     @include('projects.partials.projects-detail')
@@ -64,6 +65,7 @@
         <script src="{{ asset('assets/js/developments/create.js') }}"></script>
         <script src="{{ asset('assets/js/developments/edit.js') }}"></script>
         <script src="{{ asset('assets/js/developments/delete.js') }}"></script>
+        <script src="{{ asset('assets/js/developments/checkdev.js') }}"></script>
         <script src="{{ asset('assets/js/projects/icons.js') }}"></script>
         <script src="{{ asset('assets/js/projects/date-picker.js') }}"></script>
     @endpush

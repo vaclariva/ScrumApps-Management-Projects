@@ -114,13 +114,11 @@ function updateAjax({ el }) {
             const isCardExist = $(cardSelector).length > 0;
 
             if (isCardExist) {
-                // Backlog sudah ada, update tampilannya
                 updateCard({
                     backlog: res.backlog,
                     project: res.project
                 });
             } else if (res?.html) {
-                // Backlog baru, tambahkan ke DOM
                 $('#list-backlogs').prepend(res.html);
                 KTMenu.createInstances();
             }
@@ -218,6 +216,8 @@ $(document).on('click', '.btn-edit-backlog', function (e) {
         const id = checkBacklog.id ?? '';
         const isSaved = !!id;
         const formAttributes = isSaved ? 'data-saved="true"' : 'data-saved="false"';
+        const isActive = checkBacklog.status === 'active';
+        const lineThroughStyle = isActive ? 'text-decoration: line-through;' : '';
 
         const formHtml = `
             <form class="form-checklist d-flex flex-column gap-3 mb-3 ffff"
@@ -240,13 +240,13 @@ $(document).on('click', '.btn-edit-backlog', function (e) {
                     <div class="form-check-label checklist-editable"
                         contenteditable="true"
                         spellcheck="false"
-                        style="width: 100%; outline: none;"
+                        style="width: 100%; outline: none; ${lineThroughStyle}"
                         onfocus="this.style.backgroundColor='#fff5f5'; this.style.borderRadius='0.475rem'; this.style.padding='0.5rem';"
                         onblur="this.style.backgroundColor=''; this.style.padding='0';">
                         ${name}
                     </div>
                 </div>
-                <div class="d-flex gap-3 checklist-action-buttons d-none" hidden>
+                <div class="d-flex gap-3 checklist-action-buttons d-none">
                     <button type="button" onclick="submitCheckbacklog({el: this})" class="btn btn-sm tbr_btn tbr_btn--primary btn-save-checklist">Tambah</button>
                     <button type="button" onclick="updateCheckbacklog({el: this})" class="btn btn-sm tbr_btn tbr_btn--primary btn-update-checklist d-none">Simpan</button>
                     <button type="button" class="btn btn-sm btn-secondary btn-cancel-checklist">Batal</button>

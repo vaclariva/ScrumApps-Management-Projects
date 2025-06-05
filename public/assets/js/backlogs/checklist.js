@@ -20,7 +20,13 @@ function submitCheckbacklog({ el }) {
             $(el).html(loader);
         },
         success: function (res) {
-            console.log('ini:', res.check_backlogs);
+            let checklists = res.check_backlogs;
+            let checkBacklogIdBaru = checklists[checklists.length - 1]?.id;
+            form.attr("data-check-backlog-id", checkBacklogIdBaru);
+            form.attr("data-saved", "true");
+            form.find(".checkBacklogId").val(checkBacklogIdBaru);
+
+
             if (res?.html) {
                 $(`#backlog_card_${res.backlog.id}`).remove();
 
@@ -90,13 +96,17 @@ function showChecklistForm(existingChecklist = null, backlogId = null) {
     const $checklistIdField = $form.find('.checklist-id-field');
     const $backlogIdField = $form.find('.backlog-id-field');
     const $hiddenTitle = $form.find('.checklist-hidden-title');
-    const $checkbox = $form.find('.form-check-input');
-
-    $backlogIdField.val(backlogId || currentBacklogId);
+    let finalBacklogId = backlogId;
+    if (!finalBacklogId) {
+        const $activeEditBtn = $('.btn-edit-backlog.active, .btn-edit-backlog[data-id]').first();
+        if ($activeEditBtn.length) {
+            finalBacklogId = $activeEditBtn.data('id');
+        }
+    }
+    finalBacklogId = finalBacklogId || currentBacklogId;
+    $backlogIdField.val(finalBacklogId);
     $checklistTitle.focus();
-
     const isSaved = !!existingChecklist;
-
     if (isSaved) {
         $form.attr('data-saved', 'true');
         $checklistIdField.val(existingChecklist.id);
@@ -105,15 +115,11 @@ function showChecklistForm(existingChecklist = null, backlogId = null) {
     } else {
         $form.attr('data-saved', 'false');
     }
-
     toggleChecklistButtons($form, isSaved);
-
     $(document).on('focusin', '.checklist-editable', function () {
         const $form = $(this).closest('form');
-        console.log('Fokus di checklist!');
         $form.find('.checklist-action-buttons').removeClass('d-none');
     });
-
     $checklistTitle.on('blur', () => {
         setTimeout(() => {
             if (!$form.has(document.activeElement).length) {
@@ -123,12 +129,24 @@ function showChecklistForm(existingChecklist = null, backlogId = null) {
     });
 }
 
+$(document).on('click', '.btn-edit-backlog', function () {
+    $('.btn-edit-backlog').removeClass('active'); // reset lainnya
+    $(this).addClass('active');
+
+    currentBacklogId = $(this).data('id'); // simpan juga ke variabel global
+});
+
+
 $(document).on('click', '.btn-update-checklist', function () {
     const $form = $(this).closest('.form-checklist');
     updateCheckbacklog($form);
 });
 
 function checklistSaved(response) {
+    // let checklists = res.check_backlogs;
+    // let checkBacklogIdBaru = checklists[checklists.length - 1]?.id;
+    // form.attr("data-check-backlog-id", checkBacklogIdBaru);
+    // form.find(".checkBacklogId").val(checkBacklogIdBaru);
     const $form = $('.form-checklist').last();
     $form.attr('data-saved', 'true');
 
@@ -168,18 +186,39 @@ $(document).on('click', '.btn-cancel-checklist', function () {
     }
 });
 
+// $(document).on('focusin', '.checklist-editable', function () {
+//     $(this).closest('.form-checklist').find('.checklist-action-buttons').removeClass('d-none');
+//     $('.btn-add-checklist').addClass('d-none');
+//     const $form = $(this).closest('form'); // ✅ definisikan $form dulu
+//     const isSaved = $form.attr('data-saved') === 'true';
+//     console.log('Focus in on checklist form. data-saved =', isSaved);
+
+//     toggleChecklistButtons($form, isSaved);
+// });
+
+
 $(document).on('focusin', '.checklist-editable', function () {
-    $('.checklist-action-buttons').addClass('d-none');
+    $('.form-checklist').not($(this).closest('.form-checklist')).find('.checklist-action-buttons').addClass('d-none');
     $(this).closest('.form-checklist').find('.checklist-action-buttons').removeClass('d-none');
     $('.btn-add-checklist').addClass('d-none');
+    const $form = $(this).closest('form');
+    const isSaved = $form.attr('data-saved') === 'true';
+    toggleChecklistButtons($form, isSaved);
 });
 
 $(document).on('focusout', '.checklist-editable', function () {
     const $form = $(this).closest('.form-checklist');
     setTimeout(() => {
-        if (!$form.has(document.activeElement).length) {
+        const newlyFocused = document.activeElement;
+        const isStillInSameForm = $form.has(newlyFocused).length > 0;
+
+        if (!isStillInSameForm) {
             $form.find('.checklist-action-buttons').addClass('d-none');
-            const anyFocused = $('.form-checklist').toArray().some(f => $(f).has(document.activeElement).length > 0);
+
+            const anyFocused = $('.form-checklist').toArray().some(f =>
+                $(f).has(document.activeElement).length > 0
+            );
+
             if (!anyFocused) {
                 $('.btn-add-checklist').removeClass('d-none');
             }

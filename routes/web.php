@@ -2,31 +2,22 @@
 
 use App\Http\Controllers\BacklogController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\CheckDevController;
 use App\Http\Controllers\DevelopmentController;
 use App\Http\Controllers\NotifController;
 use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\AuthlogController;
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckBacklogController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InformationController;
-use App\Http\Controllers\InventoryController;
-use App\Http\Controllers\LocationController;
-use App\Http\Controllers\MinimumStockController;
 use App\Http\Controllers\NewPasswordPartnerController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\PartnerController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SprintController;
-use App\Http\Controllers\StockHistoryController;
 use App\Http\Controllers\VisionBoardController;
-use App\Http\Controllers\WarehouseController;
 use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\DataTables;
 
@@ -43,25 +34,9 @@ Route::middleware(['middleware' => 'banned.ip',
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/district/{id}', [LocationController::class, 'getDistrict'])->name('location.getDistrict');
-    Route::get('/regency/{id}', [LocationController::class, 'getRegency'])->name('location.getRegency');
-
     Route::get('/users/list', [UserController::class, 'list'])->name('users.list');
     Route::post('/users/{user}/resend-email', [UserController::class, 'resendEmailRegister'])->name('users.resend-email');
     Route::resource('users', UserController::class);
-
-    Route::get('/inventories/{type}/create', [InventoryController::class, 'create'])->name('inventories.create');
-    Route::get('/inventories/check-stock/{productVariant}', [InventoryController::class, 'checkStockProductVariant'])->name('inventories.check_stock');
-    Route::get('/inventories/list', [InventoryController::class, 'list'])->name('inventories.list');
-    Route::get('/inventories', [InventoryController::class, 'index'])->name('inventories.index');
-    Route::post('/inventories', [InventoryController::class, 'store'])->name('inventories.store');
-    Route::get('/inventories/history/list', [StockHistoryController::class, 'list'])->name('inventories-history.list');
-    Route::get('/inventories/history', [StockHistoryController::class, 'index'])->name('inventories-history.index');
-
-    Route::get('/inventories/minimum-stock/list', [MinimumStockController::class, 'list'])->name('inventories.minimumStock.list');
-    Route::get('/inventories/minimum-stock', [MinimumStockController::class, 'index'])->name('inventories.minimumStock.index');
-    Route::post('/inventories/minimum-stock/{productVariant}/{warehouse}', [MinimumStockController::class, 'update'])->name('inventories.minimumStock.update');
-
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -85,50 +60,8 @@ Route::middleware(['middleware' => 'banned.ip',
 
     });
 
-    Route::get('/units/list', [UnitController::class, 'list'])->name('units.list');
-    Route::resource('units', UnitController::class);
-
     Route::get('/authlog', [AuthlogController::class, 'index'])->name('authlog.index');
     Route::get('/authlog/list', [AuthlogController::class, 'list'])->name('authlog.list');
-
-    Route::get('/categories/list', [CategoryController::class, 'list'])->name('categories.list');
-    Route::resource('categories', CategoryController::class);
-
-    Route::get('/products/list', [ProductController::class, 'list'])->name('products.list');
-    Route::resource('products', ProductController::class);
-
-    Route::get('/products/{product}/b2b', [ProductController::class, 'indexB2b'])->name('products.indexB2b');
-    Route::post('/products/{product}/b2b', [ProductController::class, 'storeB2b'])->name('products.storeB2b');
-
-    Route::get('/products/{product}/b2c', [ProductController::class, 'indexB2c'])->name('products.indexB2c');
-    Route::post('/products/{product}/b2c', [ProductController::class, 'storeB2c'])->name('products.storeB2c');
-
-    Route::get('/products/{product}/variants', [ProductController::class, 'indexVariant'])->name('products.indexVariant');
-    Route::post('/products/{product}/variants', [ProductController::class, 'storeVariant'])->name('products.storeVariant');
-    Route::delete('/products/{product}/variants/{productVariant}', [ProductController::class, 'destroyVariant'])->name('products.destroyVariant');
-    Route::delete('/products/{product}/variants/{productVariant}/delete-image', [ProductController::class, 'deleteImageVariant'])->name('products.deleteImageVariant');
-    Route::post('/products/{product}/variants/check', [ProductController::class, 'checkVariant'])->name('products.checkVariant');
-    Route::post('/products/{product}/b2b/visibility', [ProductController::class, 'storeB2bVisibility'])->name('products.storeB2bVisibility');
-    Route::post('/products/{product}/b2c/visibility', [ProductController::class, 'storeB2cVisibility'])->name('products.storeB2cVisibility');
-
-    Route::get('/warehouses/list', [WarehouseController::class, 'list'])->name('warehouses.list');
-    Route::resource('warehouses', WarehouseController::class);
-
-    Route::get('/partners/list', [PartnerController::class, 'list'])->name('partners.list');
-    Route::resource('/partners', PartnerController::class);
-    Route::post('partners/reset-password/{partner}/resend', [NewPasswordPartnerController::class, 'resend'])
-        ->name('password.partner.resend');
-
-    Route::get('/orders/list', [OrderController::class, 'list'])->name('orders.list');
-    Route::get('/orders/widget', [OrderController::class, 'widget'])->name('orders.widget');
-    Route::get('/orders/product/list', [OrderController::class, 'getProductList'])->name('orders.getProductList');
-    Route::get('/orders/product', [OrderController::class, 'getOrderProduct'])->name('orders.getOrderProduct');
-    Route::post('/orders/product', [OrderController::class, 'addProduct'])->name('orders.addProduct');
-    Route::delete('/orders/product/{orderItem}', [OrderController::class, 'deleteProduct'])->name('orders.deleteProduct');
-    Route::put('/orders/product/{orderItem}', [OrderController::class, 'updateProduct'])->name('orders.updateProduct');
-    Route::put('/orders/{order}/partial',[OrderController::class, 'updatePartial'])->name('orders.updatePartial');
-    Route::delete('/orders/{order}/type',[OrderController::class, 'changeProductType'])->name('orders.changeProductType');
-    Route::resource('orders', OrderController::class);
 
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
@@ -153,11 +86,11 @@ Route::middleware(['middleware' => 'banned.ip',
     Route::post('/backlogs', [BacklogController::class, 'store'])->name('backlogs.store');
     Route::match(['PUT', 'PATCH'], '/backlogs/{backlog}', [BacklogController::class, 'update'])->name('backlogs.update');
     Route::post('/backlogs/{id}/duplicate', [BacklogController::class, 'duplicate'])->name('backlogs.duplicate');
+    Route::get('/backlogs/{backlog}/download', [BacklogController::class, 'downloadPdf'])->name('backlogs.download');
     Route::delete('/backlogs/{backlog}', [BacklogController::class, 'destroy'])->name('backlogs.destroy');
 
     Route::post('/check-backlog', [CheckBacklogController::class, 'store'])->name(name: 'check-backlog.store');
     Route::match(['PUT', 'PATCH'], '/checkBacklogs/{checkBacklog}', [CheckBacklogController::class, 'update'])->name('check-backlog.update');
-    Route::get('/backlogs/{backlog}/download', [BacklogController::class, 'downloadPdf'])->name('backlogs.download');
     Route::delete('/checkBacklogs/{checkBacklog}', [CheckBacklogController::class, 'destroy'])->name('check-backlog.destroy');
 
     Route::get('/developments', [DevelopmentController::class, 'index'])->name('developments.index');
@@ -165,6 +98,10 @@ Route::middleware(['middleware' => 'banned.ip',
     Route::match(['PUT', 'PATCH'],'/developments/{development}', [DevelopmentController::class, 'update'])->name('developments.update');
     Route::post('/developments/{id}/update-status', [DevelopmentController::class, 'updateStatus']);
     Route::delete('/developments/{development}', [DevelopmentController::class, 'destroy'])->name('developments.destroy');
+
+    Route::post('/check-dev', [CheckDevController::class, 'store'])->name(name: 'check-dev.store');
+    Route::match(['PUT', 'PATCH'],'/check-dev/{id}', [CheckDevController::class, 'update'])->name('check-dev.update');
+    Route::delete('/check-dev/{checkDev}', [CheckDevController::class, 'destroy'])->name('check-dev.destroy');
 
     Route::get('/calendars', [CalendarController::class, 'index'])->name('calendars.index');
 
@@ -177,14 +114,6 @@ Route::middleware(['middleware' => 'banned.ip',
     Route::post('/notif/{project}/read', [NotifController::class, 'read'])->name('notif.read');
 
     Route::get('/informasi_sistem', [InformationController::class, 'index'])->name('informationSistem.index');
-});
-
-Route::middleware('guest')->group(function () {
-    Route::get('partners/reset-password/{token}', [NewPasswordPartnerController::class, 'create'])
-        ->name('password.partner.reset');
-
-    Route::post('partners/reset-password', [NewPasswordPartnerController::class, 'store'])
-        ->name('password.partner.store');
 });
 
 Route::get('database-not-found', function () {

@@ -14,18 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            UnitSeeder::class,
             SettingSeeder::class,
-            CategorySeeder::class,
-            ProductSeeder::class,
-            WarehouseSeeder::class,
-            MinimumStockSeeder::class,
-            InventorySeeder::class,
-            ProvinceSeeder::class,
-            RegencySeeder::class,
-            DistrictSeeder::class,
-            PartnerSeeder::class,
-            // OrderSeeder::class,
         ]);
     }
 }

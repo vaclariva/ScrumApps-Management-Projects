@@ -81,9 +81,6 @@ class DevelopmentController extends Controller
             ];
         }
 
-        Log::info('Isi dari variabel $tasks:', $tasks);
-        Log::info('Isi dari variabel $allTasks:', $allTasks);
-
         // Jika request berupa Ajax atau menginginkan JSON
         if ($request->wantsJson()) {
             return response()->json([
@@ -94,7 +91,7 @@ class DevelopmentController extends Controller
         }
 
         // Jika biasa, return view
-        return view('developments.index', compact('users', 'project', 'tasks', 'allTasks'));
+        return view('developments.index', compact('users', 'project', 'tasks', 'allTasks', 'developments'));
     }
 
     /**
@@ -214,9 +211,6 @@ class DevelopmentController extends Controller
      */
     public function update(UpdateDevelopmentRequest $request, Development $development)
     {
-        // Gunakan parameter route model binding untuk langsung mendapatkan instance Development
-        // Pastikan route Anda didefinisikan seperti Route::put('/developments/{development}', 'DevelopmentController@update');
-        // atau Route::resource juga otomatis akan menangani ini.
 
         DB::beginTransaction();
 
@@ -275,7 +269,6 @@ class DevelopmentController extends Controller
                     'link' => $development->link,
                     'file' => $development->file ? Storage::url($development->file) : null,
                     'status' => '_'.$development->status,
-                    // Kelas mungkin perlu diperbarui sesuai status baru
                     'class' => 'bg-light-' . match($development->status) {
                         'todo'        => 'primary',
                         'in_progress' => 'warning',
@@ -300,10 +293,9 @@ class DevelopmentController extends Controller
      */
     public function updateStatus(Request $request, $id)
     {
-        // Konversi status dari JS (yang pakai underscore) ke format valid
         $statusMap = [
             '_todo'       => 'todo',
-            '_inprocess'  => 'in_progress',
+            '_in_progress'  => 'in_progress',
             '_qa'         => 'qa',
             '_done'       => 'done',
         ];

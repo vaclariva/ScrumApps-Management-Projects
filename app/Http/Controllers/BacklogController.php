@@ -210,8 +210,6 @@ class BacklogController extends Controller
     public function downloadPdf($id)
     {
         $backlog = Backlog::with('user', 'checkBacklogs', 'project')->findOrFail($id);
-        //$backlog = Backlog::findOrFail($id);
-        //dd($backlog->user);
 
         $data = [
             'productName' => $backlog->project->name ?? '-',

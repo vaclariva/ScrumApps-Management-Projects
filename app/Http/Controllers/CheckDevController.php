@@ -2,25 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CheckBacklog\StoreCheckBacklogRequest;
-use App\Http\Requests\CheckBacklog\StoreCheckBacklogUpdateRequest;
-use App\Models\Backlog;
-use App\Models\CheckBacklog;
+use App\Http\Requests\CheckDev\StoreCheckDevRequest;
+use App\Models\CheckDev;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class CheckBacklogController extends Controller
+class CheckDevController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index($backlogId)
+    public function index()
     {
-        $backlog    = Backlog::findOrFail($backlogId);
-        $checkBacklog = CheckBacklog::where('backlog_id', $backlogId)->get();
-
-        return view('pages.vision-boards.detail-product', compact('backlog', 'checkBacklog'));
+        $checkDevs = CheckDev::with('development')->get();
+        return view('pages.vision-boards.detail-product', compact('checkDevs'));
     }
 
     /**
@@ -34,28 +30,26 @@ class CheckBacklogController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCheckBacklogRequest $request)
+    public function store(StoreCheckDevRequest $request)
     {
         DB::beginTransaction();
 
         try {
             $data = $request->validated();
             $data['status'] = $data['status'] ?? 'inactive';
-            $checkBacklog = CheckBacklog::create($data);
-            $checkBacklog->load('backlog.checkBacklogs');
+
+            $checkDev = CheckDev::create($data);
 
             DB::commit();
 
-            $backlogId = $checkBacklog->backlog->id;
             return response()->json([
                 'message' => trans('http-statuses.201'),
                 'redirect' => url()->previous(),
-                'backlog_id' => $backlogId,
-                'check_backlogs' => $checkBacklog->backlog->checkBacklogs,
+                'check_dev' => $checkDev,
             ]);
 
         } catch (\Throwable $th) {
-            info('Error:', [$th]);
+            Log::error('Gagal menyimpan checklist development:', ['error' => $th]);
             DB::rollBack();
 
             return response()->json([
@@ -83,23 +77,26 @@ class CheckBacklogController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreCheckBacklogUpdateRequest $request, CheckBacklog $checkBacklog)
+    public function update(StoreCheckDevRequest $request, $id)
     {
-        Log::info('Update Request Data:', $request->all());
         DB::beginTransaction();
 
         try {
             $data = $request->validated();
-            $checkBacklog->update($data);
+            $data['status'] = $data['status'] ?? 'inactive';
+
+            $checkDev = CheckDev::findOrFail($id);
+            $checkDev->update($data);
 
             DB::commit();
+
             return response()->json([
                 'message' => trans('http-statuses.201'),
-                'redirect' => url()->previous(),
-                'check_backlogs' => $checkBacklog->backlog->checkBacklogs,
+                'check_dev' => $checkDev,
             ]);
+
         } catch (\Throwable $th) {
-            info('Update Error:', [$th]);
+            Log::error('Gagal mengupdate checklist development:', ['error' => $th]);
             DB::rollBack();
 
             return response()->json([
@@ -111,25 +108,24 @@ class CheckBacklogController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(CheckBacklog $checkBacklog)
+    public function destroy( CheckDev $checkDev)
     {
         try {
             DB::beginTransaction();
-
-            $checkBacklog->delete();
+            $checkDev->delete();
 
             DB::commit();
 
             return response()->json([
-                'message' => trans('Berhasil dihapus.'),
-                'redirect' => url()->previous(),
+                'message' => 'Checklist berhasil dihapus.',
+                'CheckDev' => $checkDev,
             ]);
         } catch (\Throwable $th) {
-            info($th);
+            Log::error('Gagal menghapus checklist:', ['error' => $th]);
             DB::rollBack();
 
             return response()->json([
-                'message' => trans('http-statuses.500'),
+                'message' => 'Terjadi kesalahan saat menghapus checklist.',
             ], 500);
         }
     }

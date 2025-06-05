@@ -138,8 +138,6 @@ $.ajaxSetup({
 });
 
 function updateTaskStatusInBackend(taskId, newStatus) {
-    console.log('Status yang dikirim ke backend:', newStatus);
-
     $.ajax({
         url: `/developments/${taskId}/update-status`,
         method: 'POST',

@@ -27,10 +27,15 @@ function submitAjax({ el }) {
             $(el).html(loader);
         },
         success: function (res) {
-            console.log("Task berhasil dibuat:", res);
-            showSuccessToast({ message: res?.message ?? "Task berhasil dibuat" });
+            // console.log("Task berhasil dibuat:", res);
+            // showSuccessToast({ message: res?.message ?? "Task berhasil dibuat" });
 
             const task = res.task;
+            $('.form-checklist input[name="dev_id"]').each(function () {
+                if (!$(this).val()) {
+                    $(this).val(task.id);
+                }
+            });
             if (kanban && task && task.status) {
                 const statusConfig = {
                     _todo: 'primary',
@@ -63,6 +68,11 @@ function submitAjax({ el }) {
             } else {
                 console.warn("Tidak bisa menambahkan card ke kanban. Periksa status atau instance kanban.");
             }
+
+            let successCallbackName = form.data("success-callback");
+            if (successCallbackName && typeof window[successCallbackName] === "function") {
+                window[successCallbackName](task, res);
+            }
         },
 
         error: function (xhr) {
@@ -89,4 +99,12 @@ function submitAjax({ el }) {
             }
         }
     });
+}
+
+let currentDevId = null;
+function successCallback(task, response) {
+    currentDevId = task.id;
+    $('.devId').val(currentDevId);
+
+    showSuccessToast({ message: response?.message ?? "Board berhasil dibuat" });
 }

@@ -33,13 +33,6 @@ function newCard(res) {
                             <span class="fs-7">${res.backlog.sprint.name}</span>
                         </div>` : ''}
 
-                        <div class="d-flex align-items-center">
-                            <i class="ki-duotone ki-check-square text-success fs-2 gap-1">
-                                <span class="path1"></span><span class="path2"></span>
-                            </i>
-                            <span class="text-success">3/3</span>
-                        </div>
-
                         ${res.backlog.status === 'active' ? `
                         <div class="d-flex align-items-center gap-1">
                             <i class="ki-duotone ki-medal-star text-success fs-2">
@@ -121,7 +114,6 @@ function submitAjax({ el }) {
             $(el).html(loader);
         },
         success: function (res) {
-            console.log('ini:', res.check_backlogs);
             if (res?.html) {
                 $(`#backlog_card_${res.backlog.id}`).remove();
 

@@ -36,6 +36,8 @@
                     @method('PUT')
                     <input type="hidden" name="project_id" value="{{ $project->id }}">
                     <input type="hidden" name="id" id="edit_board_id">
+                    <input type="hidden" id="current_development_id" value="{{ $developments->first()->id ?? '' }}">
+">
 
                     <div class="form-group mb-8">
                         <label for="edit_name" class="h6 tbr_font--weight-bold d-block">Nama</label>

@@ -88,52 +88,67 @@
 
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <label for="role" class="h6 tbr_font--weight-bold d-block">UI/UX</label>
-                        <i class="ki-duotone ki-plus-square fs-2 text-danger">
+                        <i class="ki-duotone ki-plus-square fs-2 text-danger" onclick="addChecklistForm(this, 'UI/UX')">
                             <span class="path1"></span>
                             <span class="path2"></span>
                             <span class="path3"></span>
                         </i>
                     </div>
+                    <div class="checklist-form-container mb-4" data-category="UI/UX"></div>
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <label for="role" class="h6 tbr_font--weight-bold d-block">BackEnd</label>
-                        <i class="ki-duotone ki-plus-square fs-2 text-danger">
+                        <i class="ki-duotone ki-plus-square fs-2 text-danger" onclick="addChecklistForm(this, 'BackEnd')">
                             <span class="path1"></span>
                             <span class="path2"></span>
                             <span class="path3"></span>
                         </i>
                     </div>
+                    <div class="checklist-form-container mb-4" data-category="BackEnd"></div>
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <label for="role" class="h6 tbr_font--weight-bold d-block">FrontEnd</label>
-                        <i class="ki-duotone ki-plus-square fs-2 text-danger">
+                        <i class="ki-duotone ki-plus-square fs-2 text-danger" onclick="addChecklistForm(this, 'FrontEnd')">
                             <span class="path1"></span>
                             <span class="path2"></span>
                             <span class="path3"></span>
                         </i>
                     </div>
+                    <div class="checklist-form-container mb-4" data-category="FrontEnd"></div>
                     <div class="d-flex align-items-center justify-content-between">
                         <label for="role" class="h6 tbr_font--weight-bold d-block">Quality Assurance</label>
-                        <i class="ki-duotone ki-plus-square fs-2 text-danger">
+                        <i class="ki-duotone ki-plus-square fs-2 text-danger" onclick="addChecklistForm(this, 'QA')">
                             <span class="path1"></span>
                             <span class="path2"></span>
                             <span class="path3"></span>
                         </i>
                     </div>
-
-                    {{-- <div id="checklist-wrapper">
-                        <div class="checklist-forms"></div>
-                        <div class="btn-add-checklist mt-5">
-                            <a href="#" class="btn btn-light-danger" onclick="showChecklistForm()">Tambah Checklist</a>
-                        </div>
-                    </div> --}}
+                    <div class="checklist-form-container" data-category="QA"></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-    document.getElementById('file').addEventListener('change', function() {
-        const fileName = this.files[0] ? this.files[0].name : "Lampiran File";
-        document.getElementById('file-name').textContent = fileName;
-    });
-</script>
+<template id="template-checklist-form">
+    <form class="form-checklist d-flex flex-column gap-3 mb-3 create">
+        <input type="hidden" name="dev_id" class="devId" value="">
+        <input type="hidden" name="id" class="checkdevId" value="">
+        <input type="hidden" name="category" class="category-value" value="">
+        <div class="form-check checklist-item form-check-solid">
+            <input type="checkbox" class="form-check-input checklist-status-toggle">
+            <input type="hidden" name="name" class="checklist-hidden-title" />
+            <div class="form-check-label checklist-editable"
+                contenteditable="true"
+                spellcheck="false"
+                style="width: 100%; outline: none;"
+                onfocus="this.style.backgroundColor='#fff5f5'; this.style.borderRadius='0.475rem'; this.style.padding='0.5rem';"
+                onblur="this.style.backgroundColor=''; this.style.padding='0';">
+            </div>
+        </div>
+        <div class="d-flex gap-3 checklist-action-buttons">
+            <button type="button" onclick="submitCheckdev({el: this})" class="btn btn-sm tbr_btn tbr_btn--primary btn-save-checklist">Tambah</button>
+            <button type="button" onclick="updateCheckdev({el: this})" class="btn btn-sm tbr_btn tbr_btn--primary btn-update-checklist d-none">Simpan</button>
+            <button type="button" onclick="cancelChecklistForm(this)" class="btn btn-sm btn-secondary btn-cancel-checklist">Batal</button>
+            <button type="button" onclick="deleteCheckdev(this)" class="btn btn-sm btn-secondary btn-delete-checklist d-none">Hapus</button>
+        </div>
+    </form>
+</template>

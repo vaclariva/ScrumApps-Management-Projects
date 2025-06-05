@@ -15,7 +15,7 @@ var KTJKanbanDemoColor = function () {
 
         const statuses = {
             _todo: { title: 'To Do', class: 'primary' },
-            _inprocess: { title: 'In Process', class: 'warning' },
+            _in_progress: { title: 'In Progress', class: 'warning' },
             _qa: { title: 'Quality Assurance', class: 'info' },
             _done: { title: 'Done', class: 'success' }
         };

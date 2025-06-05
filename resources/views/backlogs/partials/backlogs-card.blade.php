@@ -36,13 +36,13 @@
                 </div>
 
                 {{-- CHECK BACKLOG (STATIC DUMMY) --}}
-                <div class="d-flex align-items-center">
+                {{--<div class="d-flex align-items-center">
                     <i class="ki-duotone ki-check-square text-success fs-2 gap-1">
                         <span class="path1"></span>
                         <span class="path2"></span>
                     </i>
                     <span class="text-success">3/3</span>
-                </div>
+                </div>--}}
 
                 {{-- STATUS DONE --}}
                 <div class="d-flex align-items-center gap-1 BacklogStatusDone {{ $backlog->status === 'active' ? '' : 'd-none' }}"
