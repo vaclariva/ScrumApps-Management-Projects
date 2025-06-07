@@ -1,5 +1,8 @@
 let currentEditTaskId = null;
+const modalEditBoard = document.getElementById('modal_edit_boards');
+const modalCreateBoard = document.getElementById('modal_create_boards');
 
+// OPEN MODAL
 function openEditModal(task) {
     currentEditTaskId = task.id;
     document.getElementById('edit_board_id').value = task.id;
@@ -22,8 +25,127 @@ function openEditModal(task) {
     }
     const form = document.getElementById('form_edit_board');
     form.action = `/developments/${task.id}`;
-    const modal = new bootstrap.Modal(document.getElementById('modal_edit_boards'));
+    modalEditBoard.querySelectorAll('.checklist-form-container').forEach(container => {
+        container.innerHTML = '';
+    });
+    const relevantCheckDevs = checkDevs.filter(checkdev => {
+        return checkdev.dev_id == task.id;
+    });
+
+    if (relevantCheckDevs.length > 0) {
+        relevantCheckDevs.forEach(checkdev => {
+            const template = document.getElementById('template-checklist-form');
+            const clone = template.content.cloneNode(true);
+            const formElement = clone.querySelector('.form-checklist');
+            const statusToggle = formElement.querySelector('.checklist-status-toggle');
+            const editableDiv = formElement.querySelector('.checklist-editable');
+            // --- Ambil referensi ke hidden input status ---
+            const hiddenStatusInput = formElement.querySelector('.checklist-status-hidden');
+
+            formElement.classList.remove('create');
+            formElement.classList.add('update');
+            formElement.setAttribute('data-saved', 'true');
+            formElement.querySelector('.devId').value = checkdev.dev_id;
+            formElement.querySelector('.checkdevId').value = checkdev.id;
+            formElement.querySelector('.category-value').value = checkdev.category || '';
+
+            // --- LOGIKA UTAMA UNTUK STATUS CHECKBOX DAN LINE-THROUGH ---
+            statusToggle.checked = checkdev.status === 'active';
+            // --- PENTING: Set nilai hidden input status dari data checkdev ---
+            hiddenStatusInput.value = checkdev.status;
+
+            if (checkdev.status === 'active') {
+                editableDiv.style.textDecoration = 'line-through';
+                editableDiv.style.opacity = '0.7';
+            } else {
+                editableDiv.style.textDecoration = 'none';
+                editableDiv.style.opacity = '1';
+            }
+            // --- AKHIR LOGIKA STATUS ---
+
+            editableDiv.textContent = checkdev.name;
+            formElement.querySelector('.checklist-hidden-title').value = checkdev.name;
+
+            // Event listener untuk mengubah status dan tampilan saat checkbox diubah
+            statusToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    editableDiv.style.textDecoration = 'line-through';
+                    editableDiv.style.opacity = '0.7';
+                    // --- Update hidden input saat checkbox diubah ---
+                    hiddenStatusInput.value = 'active';
+                } else {
+                    editableDiv.style.textDecoration = 'none';
+                    editableDiv.style.opacity = '1';
+                    // --- Update hidden input saat checkbox diubah ---
+                    hiddenStatusInput.value = 'inactive';
+                }
+            });
+
+            editableDiv.addEventListener('input', function() {
+                formElement.querySelector('.checklist-hidden-title').value = this.textContent;
+            });
+            formElement.querySelector('.checklist-action-buttons').classList.add('d-none');
+            const cleanCategory = checkdev.category
+                .toLowerCase()
+                .replace(/\s/g, '')
+            const targetContainerId = `edit-checklist-${cleanCategory}`;
+
+            console.log(`Mencoba menargetkan kontainer: "${targetContainerId}" untuk kategori "${checkdev.category}"`);
+            const targetContainer = document.getElementById(targetContainerId);
+
+            if (targetContainer) {
+                targetContainer.appendChild(clone);
+            } else {
+                console.warn(`Container untuk kategori "${checkdev.category}" (ID: ${checkdev.id}) tidak ditemukan di modal EDIT dengan ID: ${targetContainerId}.`);
+            }
+        });
+    }
+    const modal = new bootstrap.Modal(modalEditBoard);
     modal.show();
+}
+
+// ADD CHECKDEV
+function addChecklistForm(element, category, modalType) {
+    const template = document.getElementById('template-checklist-form');
+    const clone = template.content.cloneNode(true);
+    const formElement = clone.querySelector('.form-checklist');
+    const statusToggle = formElement.querySelector('.checklist-status-toggle');
+    const editableDiv = formElement.querySelector('.checklist-editable');
+    formElement.querySelector('.devId').value = (modalType === 'edit' && currentEditTaskId) ? currentEditTaskId : '';
+    formElement.querySelector('.category-value').value = category;
+    statusToggle.checked = false;
+    editableDiv.style.textDecoration = 'none';
+    editableDiv.style.opacity = '1';
+    statusToggle.addEventListener('change', function() {
+        if (this.checked) {
+            editableDiv.style.textDecoration = 'line-through';
+            editableDiv.style.opacity = '0.7';
+        } else {
+            editableDiv.style.textDecoration = 'none';
+            editableDiv.style.opacity = '1';
+        }
+    });
+
+    formElement.querySelector('.btn-save-checklist').classList.remove('d-none');
+    formElement.querySelector('.btn-update-checklist').classList.add('d-none');
+    formElement.querySelector('.btn-delete-checklist').classList.add('d-none');
+    editableDiv.addEventListener('input', function() {
+        formElement.querySelector('.checklist-hidden-title').value = this.textContent;
+    });
+    let targetContainerId;
+    const cleanCategory = category.toLowerCase().replace(/\s/g, ''); // Tambahkan penggantian slash
+    if (modalType === 'create') {
+        targetContainerId = `create-checklist-${cleanCategory}`;
+    } else {
+        targetContainerId = `edit-checklist-${cleanCategory}`;
+    }
+    const targetContainer = document.getElementById(targetContainerId);
+
+    if (targetContainer) {
+        targetContainer.appendChild(clone);
+    } else {
+        console.warn(`Container untuk kategori "${category}" tidak ditemukan di modal ${modalType} dengan ID: ${targetContainerId}.`);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function () {

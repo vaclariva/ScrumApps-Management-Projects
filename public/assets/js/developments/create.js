@@ -1,3 +1,8 @@
+$('#modal_create_boards').on('shown.bs.modal', function () {
+    $('.checklist-form-container').html('');
+    console.log('🧼 Modal create dibuka: checklist dikosongkan (jQuery).');
+});
+
 function newCard(res) {
     return `
         <div class="kanban-item bg-primary text-white" data-id="${res.task.id}" data-class="light-primary">
@@ -27,10 +32,8 @@ function submitAjax({ el }) {
             $(el).html(loader);
         },
         success: function (res) {
-            // console.log("Task berhasil dibuat:", res);
-            // showSuccessToast({ message: res?.message ?? "Task berhasil dibuat" });
-
             const task = res.task;
+            $('.form-checkdev-create').removeClass('d-none');
             $('.form-checklist input[name="dev_id"]').each(function () {
                 if (!$(this).val()) {
                     $(this).val(task.id);

@@ -21,10 +21,11 @@
 @section('content')
     @include('developments.modal-create')
     @include('developments.modal-edit')
-    @include('developments.partials.default-modal-delete')
+    @include('developments.partials.modal-delete')
     @include('projects.modal-edit')
     @include('include.default-modal-delete')
     @include('projects.partials.projects-detail')
+    @include('developments.partials.checkdev-template')
     <br>
 
     <div class="card">
@@ -56,6 +57,7 @@
         <script>
             window.kanbanData = @json($tasks);
             window.allTasksDetail = @json($allTasks);
+            const checkDevs = @json($checkDevs);
         </script>
         <script src="{{ asset('metronic/assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
         <script src="{{ asset('assets/js/default-datatable.js') }}"></script>

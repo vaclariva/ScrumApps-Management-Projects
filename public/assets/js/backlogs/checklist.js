@@ -186,16 +186,6 @@ $(document).on('click', '.btn-cancel-checklist', function () {
     }
 });
 
-// $(document).on('focusin', '.checklist-editable', function () {
-//     $(this).closest('.form-checklist').find('.checklist-action-buttons').removeClass('d-none');
-//     $('.btn-add-checklist').addClass('d-none');
-//     const $form = $(this).closest('form'); // ✅ definisikan $form dulu
-//     const isSaved = $form.attr('data-saved') === 'true';
-//     console.log('Focus in on checklist form. data-saved =', isSaved);
-
-//     toggleChecklistButtons($form, isSaved);
-// });
-
 
 $(document).on('focusin', '.checklist-editable', function () {
     $('.form-checklist').not($(this).closest('.form-checklist')).find('.checklist-action-buttons').addClass('d-none');
@@ -245,6 +235,7 @@ function updateCheckbacklog({ el }) {
     formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
     formData.append('name', name);
     formData.append('backlog_id', backlogId);
+    
 
     $.ajax({
         url: `/checkBacklogs/${checkBacklogId}`,
@@ -253,10 +244,7 @@ function updateCheckbacklog({ el }) {
         processData: false,
         contentType: false,
         beforeSend: function () {
-            $(el).attr('disabled', true)
-                .html('Simpan <span class="spinner-border spinner-border-sm text-white ms-2"></span>');
-                console.log('checkBacklogId:', checkBacklogId);
-                console.log('backlogId:', backlogId);
+        $(el).attr('disabled', true).html('Simpan <span class="spinner-border spinner-border-sm text-white ms-2"></span>');
         },
         success: function (res) {
             showSuccessToast({ message: res?.message ?? "Berhasil diupdate!" });

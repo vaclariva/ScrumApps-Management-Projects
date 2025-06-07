@@ -37,7 +37,6 @@
                     <input type="hidden" name="project_id" value="{{ $project->id }}">
                     <input type="hidden" name="id" id="edit_board_id">
                     <input type="hidden" id="current_development_id" value="{{ $developments->first()->id ?? '' }}">
-">
 
                     <div class="form-group mb-8">
                         <label for="edit_name" class="h6 tbr_font--weight-bold d-block">Nama</label>
@@ -84,6 +83,52 @@
                         <button type="button" onclick="submitEditForm()" class="btn tbr_btn tbr_btn--primary">Edit Kanban Board</button>
                     </div>
                 </form>
+                <hr class="tbr_separator my-10">
+
+                {{-- == checklist board == --}}
+                <div id="form-checklist" class="form-checkdev row flex-col mb-5">
+                    <div class="mb-6">
+                        <h5>Checklist</h5>
+                        <span class="text-gray-600">Isi formulir di bawah untuk menambah checklist pengembangan setelah menyimpan data pengembangan di atas.</span>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <label for="role" class="h6 tbr_font--weight-bold d-block">UI/UX</label>
+                        <i class="ki-duotone ki-plus-square fs-2 text-danger" onclick="addChecklistForm(this, 'UI/UX', 'edit')">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                        </i>
+                    </div>
+                    <div id="edit-checklist-ui/ux" class="checklist-form-container mb-4" data-category="UI/UX"></div>
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <label for="role" class="h6 tbr_font--weight-bold d-block">BackEnd</label>
+                        <i class="ki-duotone ki-plus-square fs-2 text-danger" onclick="addChecklistForm(this, 'BackEnd', 'edit')">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                        </i>
+                    </div>
+                    <div id="edit-checklist-backend" class="checklist-form-container mb-4" data-category="BackEnd"></div>
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <label for="role" class="h6 tbr_font--weight-bold d-block">FrontEnd</label>
+                        <i class="ki-duotone ki-plus-square fs-2 text-danger" onclick="addChecklistForm(this, 'FrontEnd', 'edit')">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                        </i>
+                    </div>
+                    <div id="edit-checklist-frontend" class="checklist-form-container mb-4" data-category="FrontEnd"></div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <label for="role" class="h6 tbr_font--weight-bold d-block">Quality Assurance</label>
+                        <i class="ki-duotone ki-plus-square fs-2 text-danger" onclick="addChecklistForm(this, 'QA', 'edit')">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                        </i>
+                    </div>
+                    <div id="edit-checklist-qa" class="checklist-form-container" data-category="QA"></div>
+                </div>
             </div>
         </div>
     </div>

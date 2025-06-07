@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Development\StoreDevelopmentRequest;
 use App\Http\Requests\Development\UpdateDevelopmentRequest;
+use App\Models\CheckDev;
 use App\Models\Development;
 use App\Models\Project;
 use App\Models\User;
@@ -30,6 +31,7 @@ class DevelopmentController extends Controller
 
         $project = Project::findOrFail($projectId);
         $developments = Development::where('project_id', $projectId)->latest()->get();
+        $checkDevs = CheckDev::whereIn('dev_id', $developments->pluck('id'))->get();
 
         // Inisialisasi array untuk kanban board
         $tasks = [
@@ -91,7 +93,7 @@ class DevelopmentController extends Controller
         }
 
         // Jika biasa, return view
-        return view('developments.index', compact('users', 'project', 'tasks', 'allTasks', 'developments'));
+        return view('developments.index', compact('users', 'project', 'tasks', 'allTasks', 'developments', 'checkDevs'));
     }
 
     /**

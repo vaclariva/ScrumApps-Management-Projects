@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CheckDev\StoreCheckDevRequest;
 use App\Models\CheckDev;
+use App\Models\Development;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -13,10 +14,11 @@ class CheckDevController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($devId)
     {
-        $checkDevs = CheckDev::with('development')->get();
-        return view('pages.vision-boards.detail-product', compact('checkDevs'));
+        $developments = Development::findOrFail($devId);
+        $checkDevs = CheckDev::where('dev_id', $devId)->get();
+        return view('developments.index', compact('developments', 'checkDevs'));
     }
 
     /**

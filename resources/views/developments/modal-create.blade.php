@@ -78,77 +78,51 @@
                     </div>
                 </form>
                 <hr class="tbr_separator my-10">
-
                 {{-- == checklist board == --}}
-                <div id="form-checklist" class="form-checkbacklog row flex-col mb-5">
+                <div id="form-checklist" class="form-checkdev-create row flex-col mb-5 d-none">
                     <div class="mb-6">
                         <h5>Checklist</h5>
-                        <span class="text-gray-600">Isi formulir di bawah untuk menambah checklist backlog setelah menyimpan data backlog di atas.</span>
+                        <span class="text-gray-600">Isi formulir di bawah untuk menambah checklist pengembangan setelah menyimpan data pengembangan di atas.</span>
                     </div>
 
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <label for="role" class="h6 tbr_font--weight-bold d-block">UI/UX</label>
-                        <i class="ki-duotone ki-plus-square fs-2 text-danger" onclick="addChecklistForm(this, 'UI/UX')">
+                        <i class="ki-duotone ki-plus-square fs-2 text-danger" onclick="addChecklistForm(this, 'UI/UX', 'create')">
                             <span class="path1"></span>
                             <span class="path2"></span>
                             <span class="path3"></span>
                         </i>
                     </div>
-                    <div class="checklist-form-container mb-4" data-category="UI/UX"></div>
+                    <div id="create-checklist-uiux" class="checklist-form-container mb-4" data-category="UI/UX"></div>
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <label for="role" class="h6 tbr_font--weight-bold d-block">BackEnd</label>
-                        <i class="ki-duotone ki-plus-square fs-2 text-danger" onclick="addChecklistForm(this, 'BackEnd')">
+                        <i class="ki-duotone ki-plus-square fs-2 text-danger" onclick="addChecklistForm(this, 'BackEnd', 'create')">
                             <span class="path1"></span>
                             <span class="path2"></span>
                             <span class="path3"></span>
                         </i>
                     </div>
-                    <div class="checklist-form-container mb-4" data-category="BackEnd"></div>
+                    <div id="create-checklist-backend" class="checklist-form-container mb-4" data-category="BackEnd"></div>
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <label for="role" class="h6 tbr_font--weight-bold d-block">FrontEnd</label>
-                        <i class="ki-duotone ki-plus-square fs-2 text-danger" onclick="addChecklistForm(this, 'FrontEnd')">
+                        <i class="ki-duotone ki-plus-square fs-2 text-danger" onclick="addChecklistForm(this, 'FrontEnd', 'create')">
                             <span class="path1"></span>
                             <span class="path2"></span>
                             <span class="path3"></span>
                         </i>
                     </div>
-                    <div class="checklist-form-container mb-4" data-category="FrontEnd"></div>
+                    <div id="create-checklist-frontend" class="checklist-form-container mb-4" data-category="FrontEnd"></div>
                     <div class="d-flex align-items-center justify-content-between">
                         <label for="role" class="h6 tbr_font--weight-bold d-block">Quality Assurance</label>
-                        <i class="ki-duotone ki-plus-square fs-2 text-danger" onclick="addChecklistForm(this, 'QA')">
+                        <i class="ki-duotone ki-plus-square fs-2 text-danger" onclick="addChecklistForm(this, 'QA', 'create')">
                             <span class="path1"></span>
                             <span class="path2"></span>
                             <span class="path3"></span>
                         </i>
                     </div>
-                    <div class="checklist-form-container" data-category="QA"></div>
+                    <div id="create-checklist-qa" class="checklist-form-container" data-category="QA"></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<template id="template-checklist-form">
-    <form class="form-checklist d-flex flex-column gap-3 mb-3 create">
-        <input type="hidden" name="dev_id" class="devId" value="">
-        <input type="hidden" name="id" class="checkdevId" value="">
-        <input type="hidden" name="category" class="category-value" value="">
-        <div class="form-check checklist-item form-check-solid">
-            <input type="checkbox" class="form-check-input checklist-status-toggle">
-            <input type="hidden" name="name" class="checklist-hidden-title" />
-            <div class="form-check-label checklist-editable"
-                contenteditable="true"
-                spellcheck="false"
-                style="width: 100%; outline: none;"
-                onfocus="this.style.backgroundColor='#fff5f5'; this.style.borderRadius='0.475rem'; this.style.padding='0.5rem';"
-                onblur="this.style.backgroundColor=''; this.style.padding='0';">
-            </div>
-        </div>
-        <div class="d-flex gap-3 checklist-action-buttons">
-            <button type="button" onclick="submitCheckdev({el: this})" class="btn btn-sm tbr_btn tbr_btn--primary btn-save-checklist">Tambah</button>
-            <button type="button" onclick="updateCheckdev({el: this})" class="btn btn-sm tbr_btn tbr_btn--primary btn-update-checklist d-none">Simpan</button>
-            <button type="button" onclick="cancelChecklistForm(this)" class="btn btn-sm btn-secondary btn-cancel-checklist">Batal</button>
-            <button type="button" onclick="deleteCheckdev(this)" class="btn btn-sm btn-secondary btn-delete-checklist d-none">Hapus</button>
-        </div>
-    </form>
-</template>
