@@ -64,7 +64,7 @@
                                         <path d="M15.5 18.5031C15.24 18.5031 14.98 18.3931 14.79 18.2131C14.61 18.0231 14.5 17.7631 14.5 17.5031C14.5 17.2431 14.61 16.9831 14.79 16.7931C15.16 16.4231 15.84 16.4231 16.21 16.7931C16.39 16.9831 16.5 17.2431 16.5 17.5031C16.5 17.7631 16.39 18.0231 16.21 18.2131C16.02 18.3931 15.76 18.5031 15.5 18.5031Z" fill="#A1A5B7"/>
                                     </svg>
                                 </span>
-                                <input type="text" id="start_date" name="start_date" class="tbr_form form-control date" placeholder="Pilih tanggal" value="{{ $project->start_date ? \Carbon\Carbon::parse($project->start_date)->format('d F Y, H:i') : '' }}" data-td-target="#start_date" />
+                                <input type="text" id="start_date_project" name="start_date" class="tbr_form form-control date" placeholder="Pilih tanggal" value="{{ $project->start_date ? \Carbon\Carbon::parse($project->start_date)->translatedFormat('d F Y, H:i') : '' }}" data-td-target="#start_date_project" />
                             </div>
                         </div>
                         <div class="form-group mb-8">

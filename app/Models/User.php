@@ -133,6 +133,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Define accessor for is product owner.
+     */
+    protected function isProductOwner(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => $this->role == 'ProductOwner'
+        );
+    }
+
+    /**
      * Define accessor for is password null.
      */
     protected function isPasswordNull(): Attribute
@@ -149,5 +159,11 @@ class User extends Authenticatable
     public function team()
     {
         return $this->hasOne(Team::class);
+    }
+    public function readProjects()
+    {
+        return $this->belongsToMany(Project::class, 'project_user_reads')
+                    ->withPivot('read', 'read_at')
+                    ->withTimestamps();
     }
 }

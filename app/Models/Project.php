@@ -59,4 +59,10 @@ class Project extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    public function readers()
+    {
+        return $this->belongsToMany(User::class, 'project_user_reads')
+                    ->withPivot('read', 'read_at')
+                    ->withTimestamps();
+    }
 }

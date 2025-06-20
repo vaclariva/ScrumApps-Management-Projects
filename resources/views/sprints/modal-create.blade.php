@@ -92,23 +92,24 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="row form-group mb-8">
-                            <div class="col-lg-3 mt-4 mb-lg-0">
-                                <label class="h6 tbr_font--weight-bold d-block">Hasil Review</label>
+                        <div class="result-sprint d-none">
+                            <div class="row form-group mb-8">
+                                <div class="col-lg-3 mt-4 mb-lg-0">
+                                    <label class="h6 tbr_font--weight-bold d-block">Hasil Review</label>
+                                </div>
+                                <div class="py-0 col-lg-9" data-bs-theme="light">
+                                    <textarea name="result_review" class="tbr_form form-control focus:border-red-600 focus:ring-0 ckeditor-field" id="result_review_editor"></textarea>
+                                </div>
                             </div>
-                            <div class="py-0 col-lg-9" data-bs-theme="light">
-                                <textarea name="result_review" class="tbr_form form-control focus:border-red-600 focus:ring-0 ckeditor-field" id="result_review_editor"></textarea>
+                            <div class="row form-group mb-8">
+                                <div class="col-lg-3 mt-4 mb-lg-0">
+                                    <label class="h6 tbr_font--weight-bold d-block">Hasil Retrospektif</label>
+                                </div>
+                                <div class="py-0 col-lg-9" data-bs-theme="light">
+                                    <textarea name="result_retrospective" class="tbr_form form-control focus:border-red-600 focus:ring-0 ckeditor-field" id="result_retrospective_editor"></textarea>
+                                </div>
                             </div>
                         </div>
-                        <div class="row form-group mb-8">
-                            <div class="col-lg-3 mt-4 mb-lg-0">
-                                <label class="h6 tbr_font--weight-bold d-block">Hasil Retrospektif</label>
-                            </div>
-                            <div class="py-0 col-lg-9" data-bs-theme="light">
-                                <textarea name="result_retrospective" class="tbr_form form-control focus:border-red-600 focus:ring-0 ckeditor-field" id="result_retrospective_editor"></textarea>
-                            </div>
-                        </div>
-
                         <div class="d-flex justify-content-end">
                             <button anim="ripple" type="button" class="btn tbr_btn tbr_btn--light me-3" data-bs-dismiss="modal">Batal</button>
                             <button anim="ripple" type="button" onclick="submitAjax({el: this})" class="btn tbr_btn tbr_btn--primary">Simpan</button>

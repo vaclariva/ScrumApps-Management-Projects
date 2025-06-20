@@ -61,50 +61,52 @@
             </a>
         </div>
 
-        <div class="menu-item px-3 my-0" data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
-        data-kt-menu-placement="left-start" data-kt-menu-offset="-15px, 0">
-        <a href="#" class="menu-link fw-medium px-3 py-2">
-            <span class="menu-icon" data-kt-element="icon">
-                <i class="ki-duotone ki-setting-2 fs-2">
-                    <span class="path1"></span>
-                    <span class="path2"></span>
-                </i>
-            </span>
-            <span class="menu-title">Pengaturan</span>
-            <span class="menu-arrow"></span>
-        </a>
+        @if (auth()->user()->isSuperAdmin)
+            <div class="menu-item px-3 my-0" data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
+            data-kt-menu-placement="left-start" data-kt-menu-offset="-15px, 0">
+            <a href="#" class="menu-link fw-medium px-3 py-2">
+                <span class="menu-icon" data-kt-element="icon">
+                    <i class="ki-duotone ki-setting-2 fs-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                </span>
+                <span class="menu-title">Pengaturan</span>
+                <span class="menu-arrow"></span>
+            </a>
 
-        <div class="menu-sub menu-sub-dropdown py-4">
-            <div class="menu-item px-3">
-                <a href="{{ route('settings.database-backup.index') }}" class="menu-link fw-medium px-3 py-2">
-                    <span class="menu-icon">
-                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path opacity="0.4" d="M14.4903 6.75031H3.51782C2.82385 6.75031 2.25781 6.18042 2.25781 5.49031V3.51781C2.25781 2.82385 2.82771 2.25781 3.51782 2.25781H14.4903C15.1843 2.25781 15.7503 2.8277 15.7503 3.51781V5.49031C15.7503 6.1786 15.1786 6.75031 14.4903 6.75031Z" fill="#A1A5B7" stroke="#A1A5B7" stroke-width="1.5"/>
-                            <path opacity="0.4" d="M14.4903 15.7503H3.51782C2.82385 15.7503 2.25781 15.1804 2.25781 14.4903V12.5178C2.25781 11.8238 2.82771 11.2578 3.51782 11.2578H14.4903C15.1843 11.2578 15.7503 11.8277 15.7503 12.5178V14.4903C15.7503 15.1786 15.1786 15.7503 14.4903 15.7503Z" fill="#A1A5B7" stroke="#A1A5B7" stroke-width="1.5"/>
-                            <path d="M4.5 5.8125C4.1925 5.8125 3.9375 5.5575 3.9375 5.25V3.75C3.9375 3.4425 4.1925 3.1875 4.5 3.1875C4.8075 3.1875 5.0625 3.4425 5.0625 3.75V5.25C5.0625 5.5575 4.8075 5.8125 4.5 5.8125Z" fill="#A1A5B7"/>
-                            <path d="M7.5 5.8125C7.1925 5.8125 6.9375 5.5575 6.9375 5.25V3.75C6.9375 3.4425 7.1925 3.1875 7.5 3.1875C7.8075 3.1875 8.0625 3.4425 8.0625 3.75V5.25C8.0625 5.5575 7.8075 5.8125 7.5 5.8125Z" fill="#A1A5B7"/>
-                            <path d="M4.5 14.8125C4.1925 14.8125 3.9375 14.5575 3.9375 14.25V12.75C3.9375 12.4425 4.1925 12.1875 4.5 12.1875C4.8075 12.1875 5.0625 12.4425 5.0625 12.75V14.25C5.0625 14.5575 4.8075 14.8125 4.5 14.8125Z" fill="#A1A5B7"/>
-                            <path d="M7.5 14.8125C7.1925 14.8125 6.9375 14.5575 6.9375 14.25V12.75C6.9375 12.4425 7.1925 12.1875 7.5 12.1875C7.8075 12.1875 8.0625 12.4425 8.0625 12.75V14.25C8.0625 14.5575 7.8075 14.8125 7.5 14.8125Z" fill="#A1A5B7"/>
-                            <path d="M13.5 5.0625H10.5C10.1925 5.0625 9.9375 4.8075 9.9375 4.5C9.9375 4.1925 10.1925 3.9375 10.5 3.9375H13.5C13.8075 3.9375 14.0625 4.1925 14.0625 4.5C14.0625 4.8075 13.8075 5.0625 13.5 5.0625Z" fill="#A1A5B7"/>
-                            <path d="M13.5 14.0625H10.5C10.1925 14.0625 9.9375 13.8075 9.9375 13.5C9.9375 13.1925 10.1925 12.9375 10.5 12.9375H13.5C13.8075 12.9375 14.0625 13.1925 14.0625 13.5C14.0625 13.8075 13.8075 14.0625 13.5 14.0625Z" fill="#A1A5B7"/>
-                        </svg>
-                    </span>
-                    <span class="menu-title">Database Backup</span>
-                </a>
+            <div class="menu-sub menu-sub-dropdown py-4">
+                {{-- <div class="menu-item px-3">
+                    <a href="{{ route('settings.database-backup.index') }}" class="menu-link fw-medium px-3 py-2">
+                        <span class="menu-icon">
+                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path opacity="0.4" d="M14.4903 6.75031H3.51782C2.82385 6.75031 2.25781 6.18042 2.25781 5.49031V3.51781C2.25781 2.82385 2.82771 2.25781 3.51782 2.25781H14.4903C15.1843 2.25781 15.7503 2.8277 15.7503 3.51781V5.49031C15.7503 6.1786 15.1786 6.75031 14.4903 6.75031Z" fill="#A1A5B7" stroke="#A1A5B7" stroke-width="1.5"/>
+                                <path opacity="0.4" d="M14.4903 15.7503H3.51782C2.82385 15.7503 2.25781 15.1804 2.25781 14.4903V12.5178C2.25781 11.8238 2.82771 11.2578 3.51782 11.2578H14.4903C15.1843 11.2578 15.7503 11.8277 15.7503 12.5178V14.4903C15.7503 15.1786 15.1786 15.7503 14.4903 15.7503Z" fill="#A1A5B7" stroke="#A1A5B7" stroke-width="1.5"/>
+                                <path d="M4.5 5.8125C4.1925 5.8125 3.9375 5.5575 3.9375 5.25V3.75C3.9375 3.4425 4.1925 3.1875 4.5 3.1875C4.8075 3.1875 5.0625 3.4425 5.0625 3.75V5.25C5.0625 5.5575 4.8075 5.8125 4.5 5.8125Z" fill="#A1A5B7"/>
+                                <path d="M7.5 5.8125C7.1925 5.8125 6.9375 5.5575 6.9375 5.25V3.75C6.9375 3.4425 7.1925 3.1875 7.5 3.1875C7.8075 3.1875 8.0625 3.4425 8.0625 3.75V5.25C8.0625 5.5575 7.8075 5.8125 7.5 5.8125Z" fill="#A1A5B7"/>
+                                <path d="M4.5 14.8125C4.1925 14.8125 3.9375 14.5575 3.9375 14.25V12.75C3.9375 12.4425 4.1925 12.1875 4.5 12.1875C4.8075 12.1875 5.0625 12.4425 5.0625 12.75V14.25C5.0625 14.5575 4.8075 14.8125 4.5 14.8125Z" fill="#A1A5B7"/>
+                                <path d="M7.5 14.8125C7.1925 14.8125 6.9375 14.5575 6.9375 14.25V12.75C6.9375 12.4425 7.1925 12.1875 7.5 12.1875C7.8075 12.1875 8.0625 12.4425 8.0625 12.75V14.25C8.0625 14.5575 7.8075 14.8125 7.5 14.8125Z" fill="#A1A5B7"/>
+                                <path d="M13.5 5.0625H10.5C10.1925 5.0625 9.9375 4.8075 9.9375 4.5C9.9375 4.1925 10.1925 3.9375 10.5 3.9375H13.5C13.8075 3.9375 14.0625 4.1925 14.0625 4.5C14.0625 4.8075 13.8075 5.0625 13.5 5.0625Z" fill="#A1A5B7"/>
+                                <path d="M13.5 14.0625H10.5C10.1925 14.0625 9.9375 13.8075 9.9375 13.5C9.9375 13.1925 10.1925 12.9375 10.5 12.9375H13.5C13.8075 12.9375 14.0625 13.1925 14.0625 13.5C14.0625 13.8075 13.8075 14.0625 13.5 14.0625Z" fill="#A1A5B7"/>
+                            </svg>
+                        </span>
+                        <span class="menu-title">Database Backup</span>
+                    </a>
+                </div> --}}
+                <div class="menu-item px-3">
+                        <a href="{{ route('settings.smtps.index') }}" class="menu-link fw-medium px-3 py-2">
+                        <span class="menu-icon">
+                            <i class="ki-duotone ki-sms fs-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </span>
+                        <span class="menu-title">Email Host</span>
+                    </a>
+                </div>
             </div>
-            <div class="menu-item px-3">
-                    <a href="{{ route('settings.smtps.index') }}" class="menu-link fw-medium px-3 py-2">
-                    <span class="menu-icon">
-                        <i class="ki-duotone ki-sms fs-2">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                        </i>
-                    </span>
-                    <span class="menu-title">Email Host</span>
-                </a>
             </div>
-        </div>
-        </div>
+        @endif
 
         <div class="menu-item px-3 my-0" data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
             data-kt-menu-placement="left-start" data-kt-menu-offset="-15px, 0">

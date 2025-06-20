@@ -204,58 +204,40 @@ $(document).on('click', '.btn-edit-backlog', function (e) {
     e.preventDefault();
     $('.btn-add-checklist').removeClass('d-none');
 
+    const backlogId = $(this).data('id'); // 👈 ambil dari tombol Edit
+    currentBacklogId = backlogId;
     const rawData = $(this).attr('data-check-backlogs');
     const checkBacklogs = JSON.parse(rawData);
 
     $('#form-checklist .checklist-forms').empty();
 
     checkBacklogs.forEach(function (checkBacklog) {
-        const name = checkBacklog.name ?? '';
-        const checked = checkBacklog.status === 'active' ? 'checked' : '';
-        const backlogId = checkBacklog.backlog_id ?? '';
-        const id = checkBacklog.id ?? '';
-        const isSaved = !!id;
-        const formAttributes = isSaved ? 'data-saved="true"' : 'data-saved="false"';
-        const isActive = checkBacklog.status === 'active';
-        const lineThroughStyle = isActive ? 'text-decoration: line-through;' : '';
+        const template = document.querySelector('.template-checklist-form');
+        if (!template) return;
 
-        const formHtml = `
-            <form class="form-checklist d-flex flex-column gap-3 mb-3 ffff"
-                ${formAttributes}
-                action="/check-backlog/store"
-                method="POST"
-                data-success-callback="checklistSaved"
-                data-complete-callback="resetChecklistForm"
-                data-check-backlog-id="${id}"
-                onsubmit="event.preventDefault();">
-                <input type="hidden" name="_token" value="${$('meta[name="csrf-token"]').attr('content')}">
-                <input type="hidden" name="backlog_id" class="backlog-id-field" value="${backlogId}">
-                <input type="hidden" name="id" class="checkBacklogId" value="${id}">
-                <div class="form-check checklist-item form-check-solid">
-                    <input type="checkbox"
-                        class="form-check-input checklist-status-toggle"
-                        data-id="${id}"
-                        ${checked}>
-                    <input type="hidden" name="name" class="checklist-hidden-title" />
-                    <div class="form-check-label checklist-editable"
-                        contenteditable="true"
-                        spellcheck="false"
-                        style="width: 100%; outline: none; ${lineThroughStyle}"
-                        onfocus="this.style.backgroundColor='#fff5f5'; this.style.borderRadius='0.475rem'; this.style.padding='0.5rem';"
-                        onblur="this.style.backgroundColor=''; this.style.padding='0';">
-                        ${name}
-                    </div>
-                </div>
-                <div class="d-flex gap-3 checklist-action-buttons d-none">
-                    <button type="button" onclick="submitCheckbacklog({el: this})" class="btn btn-sm tbr_btn tbr_btn--primary btn-save-checklist">Tambah</button>
-                    <button type="button" onclick="updateCheckbacklog({el: this})" class="btn btn-sm tbr_btn tbr_btn--primary btn-update-checklist d-none">Simpan</button>
-                    <button type="button" class="btn btn-sm btn-secondary btn-cancel-checklist">Batal</button>
-                    <button type="button" onclick="deleteCheckbacklog({el: this})" class="btn btn-sm btn-secondary btn-delete-checklist d-none">Hapus</button>
-                </div>
-            </form>
-        `;
+        const cloned = template.content.cloneNode(true);
+        const $clonedForm = $(cloned).find('.form-checklist');
 
-        $('#form-checklist .checklist-forms').append(formHtml);
+        // ✅ Set data-saved dan checklist ID
+        $clonedForm.attr('data-saved', 'true');
+        $clonedForm.attr('data-check-backlog-id', checkBacklog.id ?? '');
+        $clonedForm.find('.checkBacklogId').val(checkBacklog.id ?? '');
+
+        // ✅ INI YANG PENTING: backlog_id di-set dari tombol edit
+        $clonedForm.find('.backlog-id-field').val(backlogId);
+
+        // ✅ Set konten editable
+        const $editable = $clonedForm.find('.checklist-editable');
+        $editable.html(checkBacklog.name ?? '');
+
+        if (checkBacklog.status === 'active') {
+            $editable.css('text-decoration', 'line-through');
+            $clonedForm.find('.checklist-status-toggle').prop('checked', true);
+        }
+
+        $('#form-checklist .checklist-forms').append($clonedForm);
     });
+
     $('#form-checklist').show();
 });
+

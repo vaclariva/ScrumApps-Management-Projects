@@ -73,14 +73,6 @@ class BacklogController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreBacklogRequest $request)
@@ -112,6 +104,7 @@ class BacklogController extends Controller
                     'project' => $backlog->project,
                 ])->render(),
                 'backlog_id' => $backlog->id,
+                'check_backlogs' => $backlog->checkBacklogs,
             ]);
 
         } catch (\Throwable $th) {
@@ -131,14 +124,6 @@ class BacklogController extends Controller
     {
         $backlog = Backlog::findOrFail($id);
         return response()->json($backlog);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
     }
 
     /**

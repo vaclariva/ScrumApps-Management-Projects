@@ -140,7 +140,7 @@
                         <div id="checklist-wrapper">
                             <div class="checklist-forms"></div>
                             <div class="btn-add-checklist mt-5">
-                                <a href="#" class="btn btn-light-danger" onclick="showChecklistForm()">Tambah Checklist</a>
+                                <a href="#" class="btn btn-light-danger" onclick="showForm(this)">Tambah Checklist</a>
                             </div>
                         </div>
                     </div>

@@ -16,7 +16,7 @@
 @section('filter-content-right')
     <div class="tab-content" id="tab-visibility-content">
         <div class="tab-pane fade show active" id="tab-user" role="tabpanel" aria-labelledby="tab-user-tab" tabindex="0">
-            @include('products.partials.listing.filter-search', ['filterId' => 'filter-user', 'type' => 'search'])
+            @include('teams.partials.filter-search', ['filterId' => 'filter-user', 'type' => 'search'])
             <div class="mt-8 text-center tbr_search--result">
                 <span class="text-muted fw-semibold tbr_search--empty d-none">Kata kunci tidak ditemukan</span>
                 <div class="d-flex justify-content-between gap-5 text-break">

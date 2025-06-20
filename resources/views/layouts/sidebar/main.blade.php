@@ -243,19 +243,21 @@
                     </div> --}}
 
                     {{-- Users --}}
-                    <div class="menu-item" id="sidebar-users">
-                        <a class="menu-link" href="{{ route('users.index') }}">
-                            <span class="menu-icon">
-                                <i class="ki-duotone ki-security-user fs-2">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                    <span class="path3"></span>
-                                    <span class="path4"></span>
-                                </i>
-                            </span>
-                            <span class="menu-title">Pengguna</span>
-                        </a>
-                    </div>
+                    @if (auth()->user()->isSuperAdmin)
+                        <div class="menu-item" id="sidebar-users">
+                            <a class="menu-link" href="{{ route('users.index') }}">
+                                <span class="menu-icon">
+                                    <i class="ki-duotone ki-security-user fs-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                    </i>
+                                </span>
+                                <span class="menu-title">Pengguna</span>
+                            </a>
+                        </div>
+                    @endif
 
                     {{-- Informasi Sistem --}}
                     <div class="menu-item" id="sidebar-information">

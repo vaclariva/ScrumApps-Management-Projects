@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Requirement Sign Off Sheet</title>
+    <title>(Lembar Tanda Tangan Persyaratan)</title>
     <style>
         @page{
             margin-top: 116px !important;
@@ -133,11 +134,11 @@
         <div class="content">
             <table>
                 <tr>
-                    <td class="label">Project Name</td>
+                    <td class="label">Nama Projek</td>
                     <td class="value">: {{ $productName }}</td>
                 </tr>
                 <tr>
-                    <td class="label">Applicant Name</td>
+                    <td class="label">Nama Pemohon</td>
                     <td class="value">: {{ $applicant }}</td>
                 </tr>
                 <tr>
@@ -148,7 +149,7 @@
         </div>
 
         <div class="content">
-            <p class="label-userstory"><strong>A. User Story</strong></p>
+            <p class="label-userstory"><strong>A. User Story ()</strong></p>
             <p class="userstory">{{ $userStory }}</p>
         </div>
 

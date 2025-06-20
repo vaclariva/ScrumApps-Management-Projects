@@ -59,7 +59,7 @@ class StoreProjectRequest extends FormRequest
             $timestamp = $fmt->parse($date);
             if ($timestamp === false) return $date;
 
-            return Carbon::createFromTimestamp($timestamp)->format('Y-m-d H:i:s');
+            return Carbon::createFromTimestamp($timestamp, 'Asia/Jakarta')->format('Y-m-d H:i:s');
         } catch (\Exception $e) {
             return $date;
         }

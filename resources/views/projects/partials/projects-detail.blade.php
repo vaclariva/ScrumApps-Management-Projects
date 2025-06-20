@@ -44,36 +44,37 @@
                     </span>
                 </div>
             </div>
+            @if (auth()->user()->isSuperAdmin || auth()->user()->isProductOwner)
+                <div>
+                    <button type="button"
+                        class="btn btn-icon tbr_btn--primary rotate"
+                        data-kt-menu-trigger="click"
+                        data-kt-menu-placement="bottom-end"
+                        data-kt-menu-offset="0px, 0px">
 
-            <div>
-                <button type="button"
-                    class="btn btn-icon tbr_btn--primary rotate"
-                    data-kt-menu-trigger="click"
-                    data-kt-menu-placement="bottom-end"
-                    data-kt-menu-offset="0px, 0px">
+                        <i class="ki-duotone ki-dots-circle-vertical tbr_text--primary fs-2qx rotate-90">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                            <span class="path4"></span>
+                        </i>
+                    </button>
+                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 fw-semibold w-200px mw-300px py-4 px-2"
+                        data-kt-menu="true">
 
-                    <i class="ki-duotone ki-dots-circle-vertical tbr_text--primary fs-2qx rotate-90">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                        <span class="path3"></span>
-                        <span class="path4"></span>
-                    </i>
-                </button>
-                <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 fw-semibold w-200px mw-300px py-4 px-2"
-                    data-kt-menu="true">
-
-                    <div class="menu-item px-4">
-                        <a href="#" class="menu-link px-3 bg-hover-light-secondary rounded" data-bs-toggle="modal"
-                            data-bs-target="#modal_edit_project">Edit Proyek</a>
-                    </div>
-                    <div class="menu-item px-4">
-                        <a href="#" class="menu-link px-3 bg-hover-light-secondary rounded"
-                           onclick="defaultDelete('{{ route('projects.destroy', $project->id) }}')">
-                           Hapus Proyek
-                        </a>
+                        <div class="menu-item px-4">
+                            <a href="#" class="menu-link px-3 bg-hover-light-secondary rounded" data-bs-toggle="modal"
+                                data-bs-target="#modal_edit_project">Edit Proyek</a>
+                        </div>
+                        <div class="menu-item px-4">
+                            <a href="#" class="menu-link px-3 bg-hover-light-secondary rounded"
+                            onclick="defaultDelete('{{ route('projects.destroy', $project->id) }}')">
+                            Hapus Proyek
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
 </div>

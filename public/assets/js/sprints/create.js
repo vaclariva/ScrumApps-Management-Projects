@@ -1,5 +1,15 @@
 const editors = {};
 
+$(document).ready(function() {
+    $('input[name="status"]').on('change', function () {
+        if ($(this).is(':checked')) {
+            $('.result-sprint').removeClass('d-none');
+        } else {
+            $('.result-sprint').addClass('d-none');
+        }
+    });
+});
+
 function submitAjax({ el }) {
     let form = $(el).closest("form");
 

@@ -16,9 +16,27 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::with('user')->latest()->get();
+        $user = auth()->user();
+        if ($user->role === 'Superadmin') {
+            $projects = Project::with('user')->latest()->get();
+        } elseif ($user->role === 'ProductOwner') {
+            $projects = Project::with('user')
+                ->where('user_id', $user->id)
+                ->latest()
+                ->get();
+        } elseif ($user->role === 'Team') {
+            $projects = Project::with('user')
+                ->whereIn('id', function ($query) use ($user) {
+                    $query->select('project_id')
+                        ->from('teams')
+                        ->where('user_id', $user->id);
+                })
+                ->latest()
+                ->get();
+        } else {
+            $projects = collect();
+        }
         $users = User::where('role', 'ProductOwner')->get();
-
         return view('projects.index', compact('projects', 'users'));
     }
 

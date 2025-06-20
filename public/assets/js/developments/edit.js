@@ -39,7 +39,6 @@ function openEditModal(task) {
             const formElement = clone.querySelector('.form-checklist');
             const statusToggle = formElement.querySelector('.checklist-status-toggle');
             const editableDiv = formElement.querySelector('.checklist-editable');
-            // --- Ambil referensi ke hidden input status ---
             const hiddenStatusInput = formElement.querySelector('.checklist-status-hidden');
 
             formElement.classList.remove('create');
@@ -48,10 +47,7 @@ function openEditModal(task) {
             formElement.querySelector('.devId').value = checkdev.dev_id;
             formElement.querySelector('.checkdevId').value = checkdev.id;
             formElement.querySelector('.category-value').value = checkdev.category || '';
-
-            // --- LOGIKA UTAMA UNTUK STATUS CHECKBOX DAN LINE-THROUGH ---
             statusToggle.checked = checkdev.status === 'active';
-            // --- PENTING: Set nilai hidden input status dari data checkdev ---
             hiddenStatusInput.value = checkdev.status;
 
             if (checkdev.status === 'active') {
@@ -61,22 +57,16 @@ function openEditModal(task) {
                 editableDiv.style.textDecoration = 'none';
                 editableDiv.style.opacity = '1';
             }
-            // --- AKHIR LOGIKA STATUS ---
-
             editableDiv.textContent = checkdev.name;
             formElement.querySelector('.checklist-hidden-title').value = checkdev.name;
-
-            // Event listener untuk mengubah status dan tampilan saat checkbox diubah
             statusToggle.addEventListener('change', function() {
                 if (this.checked) {
                     editableDiv.style.textDecoration = 'line-through';
                     editableDiv.style.opacity = '0.7';
-                    // --- Update hidden input saat checkbox diubah ---
                     hiddenStatusInput.value = 'active';
                 } else {
                     editableDiv.style.textDecoration = 'none';
                     editableDiv.style.opacity = '1';
-                    // --- Update hidden input saat checkbox diubah ---
                     hiddenStatusInput.value = 'inactive';
                 }
             });

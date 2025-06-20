@@ -8,6 +8,7 @@ use App\Listeners\LogSuccessLogout;
 use App\Listeners\DeleteStatusLogin;
 use App\Models\Project;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -43,53 +44,91 @@ class AppServiceProvider extends ServiceProvider
             'mail.from.name'               => $setting->from_name ?? env('MAIL_FROM_NAME')
         ]);
 
-        $projectsToUpdate = [];
-        $projects = Project::with(['user', 'sprints'])->latest()->get();
-        $unreadCount = 0;
-        $filteredProjects = [];
+        view()->composer('*', function ($view) {
+            $user = auth()->user();
 
-        foreach ($projects as $project) {
-            $startDate = Carbon::parse($project->start_date);
-            $endDate = Carbon::parse($project->end_date);
-            $today = Carbon::today();
-
-            $totalSprints = $project->sprints->count();
-            $completedSprints = $project->sprints->where('status', 'active')->count();
-
-            $status = 'UNKNOWN';
-
-            if ($totalSprints === 0) {
-                $status = 'HOLD';
-            } elseif ($today->greaterThan($endDate)) {
-                $status = $completedSprints < $totalSprints ? 'LATE' : 'DONE';
-            } else {
-                $status = $completedSprints < $totalSprints ? 'IN PROGRESS' : 'DONE';
+            if (!$user) {
+                $view->with('filteredProjects', []);
+                $view->with('unreadCount', 0);
+                return;
             }
 
-            if ($project->status !== $status) {
-                $projectsToUpdate[] = [
-                    'id' => $project->id,
-                    'status' => $status
-                ];
-            }
+            $projects = Project::with(['user', 'sprints'])
+                ->when($user->role !== 'Superadmin', function ($query) use ($user) {
+                    $query->where(function ($q) use ($user) {
+                        $q->where('user_id', $user->id)
+                        ->orWhereIn('id', function ($subQuery) use ($user) {
+                            $subQuery->select('project_id')
+                                ->from('teams')
+                                ->where('user_id', $user->id);
+                        });
+                    });
+                })
+                ->latest()
+                ->get();
 
-            if (in_array($status, ['DONE', 'LATE'])) {
-                $filteredProjects[] = $project;
+            $projectsToUpdate = [];
+            $unreadCount = 0;
+            $filteredProjects = [];
 
-                if (!$project->read) {
-                    $unreadCount++;
+            foreach ($projects as $project) {
+                $startDate = Carbon::parse($project->start_date);
+                $endDate = Carbon::parse($project->end_date);
+                $today = Carbon::today();
+
+                $totalSprints = $project->sprints->count();
+                $completedSprints = $project->sprints->where('status', 'active')->count();
+
+                $status = 'UNKNOWN';
+
+                if ($totalSprints === 0) {
+                    $status = 'HOLD';
+                } elseif ($today->greaterThan($endDate)) {
+                    $status = $completedSprints < $totalSprints ? 'LATE' : 'DONE';
+                } else {
+                    $status = $completedSprints < $totalSprints ? 'IN PROGRESS' : 'DONE';
+                }
+
+                if ($project->status !== $status) {
+                    $projectsToUpdate[] = [
+                        'id' => $project->id,
+                        'status' => $status
+                    ];
+                }
+
+                if (in_array($status, ['DONE', 'LATE'])) {
+                    $filteredProjects[] = $project;
+
+                    $readEntry = DB::table('project_user_reads')
+                        ->where('user_id', $user->id)
+                        ->where('project_id', $project->id)
+                        ->first();
+
+                    if (!$readEntry) {
+                        $unreadCount++;
+
+                        DB::table('project_user_reads')->insert([
+                            'user_id' => $user->id,
+                            'project_id' => $project->id,
+                            'read' => false,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                    } elseif (!$readEntry->read) {
+                        $unreadCount++;
+                    }
                 }
             }
-        }
 
-        if (!empty($projectsToUpdate)) {
-            foreach ($projectsToUpdate as $projectData) {
-                Project::where('id', $projectData['id'])->update(['status' => $projectData['status']]);
+            if (!empty($projectsToUpdate)) {
+                foreach ($projectsToUpdate as $projectData) {
+                    Project::where('id', $projectData['id'])->update(['status' => $projectData['status']]);
+                }
             }
-        }
 
-        View::share('filteredProjects', $filteredProjects);
-        View::share('unreadCount', $unreadCount);
+            $view->with('filteredProjects', $filteredProjects);
+            $view->with('unreadCount', $unreadCount);
+        });
     }
 
     /**

@@ -78,6 +78,20 @@ function newCard(res) {
                                 </a>
                             </div>
                             <div class="menu-item px-4">
+                                <a href="#"
+                                    class="menu-link px-3 bg-hover-light-secondary rounded"
+                                    onclick="duplicateBacklog(${res.backlog.id})">
+                                    Duplikat Backlog
+                                </a>
+                            </div>
+                            <div class="menu-item px-4">
+                                <a
+                                    href="/backlogs/${res.backlog.id}/download"
+                                    class="menu-link px-3 bg-hover-light-secondary rounded">
+                                    Unduh Backlog
+                                </a>
+                            </div>
+                            <div class="menu-item px-4">
                                 <a href="#" class="menu-link px-3 bg-hover-light-secondary rounded"
                                     onclick="defaultDelete('/backlogs/${res.backlog.id}')">
                                     Hapus Backlog
@@ -122,9 +136,15 @@ function submitAjax({ el }) {
                     project: res.project
                 });
                 $('#list-backlogs').prepend(newCardHTML);
+                if (res.check_backlogs) {
+                    const selector = `.btn-edit-backlog[data-id="${res.backlog.id}"]`;
+                    const editButton = document.querySelector(selector);
+                    if (editButton) {
+                        editButton.setAttribute('data-check-backlogs', JSON.stringify(res.check_backlogs));
+                    }
+                }
                 KTMenu.createInstances();
             }
-            console.log(res);
 
             let successCallbackName = form.data("success-callback");
             if (successCallbackName && typeof window[successCallbackName] === "function") {
@@ -162,16 +182,15 @@ let currentBacklogId = null;
 let activeChecklistForm = null;
 
 function successCallback(response) {
-    currentBacklogId = response.backlog_id;
-    $('#backlog-id').val(currentBacklogId);
+    const newBacklogId = response.backlog ? response.backlog.id : null;
+    if (newBacklogId) {
+        currentBacklogId = newBacklogId;
+    }
     $('.form-checkbacklog').removeClass('d-none');
     $('.btn-add-checklist').removeClass('d-none');
 
     showSuccessToast({ message: response?.message ?? "Success" });
 }
-
-
-
 
 // === reset modal === //
 $('#modal_create_backlogs').on('hidden.bs.modal', function () {

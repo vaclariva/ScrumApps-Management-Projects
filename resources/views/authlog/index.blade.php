@@ -8,6 +8,9 @@
         ]
     ])
 @endsection
+@section('sidebar')
+    @include('layouts.sidebar.main')
+@endsection
 @push('blockhead')
     <link rel="stylesheet" href="{{ asset('metronic/assets/plugins/custom/datatables/datatables.bundle.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/datatable.css') }}">

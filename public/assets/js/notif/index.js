@@ -1,25 +1,23 @@
 function readNotif({ el }) {
-    let form = $(el).closest("form");
-    let actionUrl = form.attr("action");
+    let $el = $(el);
+    let $form = $el.closest("form");
+    let actionUrl = $form.attr("action");
 
-    $(el).find(".loader").removeClass("d-none");
-    $(el).attr("disabled", true);
+    $el.find(".loader").removeClass("d-none");
+    $el.attr("disabled", true);
 
     $.ajax({
         url: actionUrl,
         method: "POST",
-        data: form.serialize(),
+        data: $form.serialize(),
         success: function (response) {
-            console.log(response.message);
-
-            form.remove();
-
-            let badge = $("#notification-trigger .notif-badge");
-            let newCount = response.unreadCount;
+            $form.remove();
+            let $badge = $("#notification-trigger .notif-badge");
+            let newCount = parseInt(response.unreadCount || 0);
 
             if (newCount > 0) {
-                if (badge.length) {
-                    badge.html(`<span class="text-white">${newCount}</span>`);
+                if ($badge.length) {
+                    $badge.html(`<span class="text-white">${newCount}</span>`);
                 } else {
                     $("#notification-trigger").append(`
                         <span class="notif-badge position-absolute">
@@ -28,15 +26,15 @@ function readNotif({ el }) {
                     `);
                 }
             } else {
-                badge.remove();
+                $badge.remove();
             }
         },
         error: function (xhr) {
-            console.error(xhr.responseText);
+            console.error(xhr.responseText || 'Terjadi kesalahan saat membaca notifikasi.');
         },
         complete: function () {
-            $(el).removeAttr("disabled");
-            $(el).find(".loader").addClass("d-none");
+            $el.removeAttr("disabled");
+            $el.find(".loader").addClass("d-none");
         }
     });
 }

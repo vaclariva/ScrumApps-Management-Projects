@@ -13,16 +13,20 @@ $(document).ready(function () {
         const resultReview = $(this).data('result_review');
         const resultRetrospective = $(this).data('result_retrospective');
 
-        console.log($(this).data());
-
         sprintId = id;
 
         $('#modal_edit_sprints form').attr('action', '/sprints/' + id);
         $('#modal_edit_sprints #name').val(name ?? '');
+
+        const checkbox = $('#modal_edit_sprints #status-sprint');
+        const resultSprint = $('#modal_edit_sprints .result-sprint');
+
         if (status === 'active') {
-            $('#modal_edit_sprints #status').prop('checked', true);
+            checkbox.prop('checked', true);
+            resultSprint.removeClass('d-none');
         } else {
-            $('#modal_edit_sprints #status').prop('checked', false);
+            checkbox.prop('checked', false);
+            resultSprint.addClass('d-none');
         }
 
         function formatDate(dateString) {
@@ -64,9 +68,17 @@ $(document).ready(function () {
         myModal.show();
     });
 
+    $('#modal_edit_sprints #status-sprint').on('change', function () {
+        const resultSprint = $('#modal_edit_sprints .result-sprint');
+        if ($(this).is(':checked')) {
+            resultSprint.removeClass('d-none');
+        } else {
+            resultSprint.addClass('d-none');
+        }
+    });
+
     $('#modal_edit_sprints form').on('submit', function (e) {
         e.preventDefault();
-        console.log('Form submit diklik');
 
         const form = $(this);
         const url = '/sprints/' + sprintId;
@@ -78,6 +90,7 @@ $(document).ready(function () {
             description: editors['edit_description'] ? editors['edit_description'].getData() : '',
             'result-review': editors['edit_result_review'] ? editors['edit_result_review'].getData() : '',
             'result-retrospective': editors['edit_result_retrospective'] ? editors['edit_result_retrospective'].getData() : '',
+            status: $('#modal_edit_sprints #status-sprint').is(':checked') ? 'active' : 'inactive'
         };
 
         $.ajax({
@@ -89,7 +102,6 @@ $(document).ready(function () {
                 var myModalEl = document.getElementById('modal_edit_sprints');
                 var modal = bootstrap.Modal.getInstance(myModalEl);
                 modal.hide();
-
                 location.reload();
             },
         });

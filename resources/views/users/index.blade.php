@@ -46,7 +46,7 @@
                     @include('users.partials.filter', ['filterId' => 'filter-users-id', 'dt' => 'dtUser'])
                 </div>
             </div>
-            @include('partners.partials.result-filter', ['filterId' => 'filter-users-id'])
+            @include('users.partials.result-filter', ['filterId' => 'filter-users-id'])
              @include('include.default-datatable', [
                     'tableId' => 'table-user',
                     'columns' => ['No', 'Nama', 'No Telepon', 'Email', 'Role', 'Aksi']

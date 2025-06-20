@@ -1,4 +1,5 @@
 $(document).on('focus', '.date', function () {
+    console.log('Focus terpicu untuk:', this.id);
     if (!$(this).data('td-init')) {
         new tempusDominus.TempusDominus(this, {
             display: {
