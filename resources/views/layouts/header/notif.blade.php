@@ -76,7 +76,7 @@
                                 </div>
                                 <form method="POST" action="{{ route('notif.read', $project->id) }}" class="ms-auto">
                                     @csrf
-                                    @if(!$project->read)
+                                    @if(!$project->read == 0)
                                         <button anim="ripple" onclick="readNotif({el: this})" class="btn btn-sm btn-light-danger btn-xs">
                                             Dibaca
                                             <span class="loader d-none spinner-border spinner-border-sm"></span>

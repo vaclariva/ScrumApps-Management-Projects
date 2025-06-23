@@ -40,7 +40,7 @@
                     Halaman ini berisi daftar proyek yang ada sesuai dengan hak akses dan kontribusi pengguna.
                 </span>
             </div>
-            @include('include.default-datatable-search', ['tableId' => 'table-user', 'fullInResponsive' => true])
+            {{-- @include('include.default-datatable-search', ['tableId' => 'table-user', 'fullInResponsive' => true]) --}}
         </div>
         <div class="card-body">
             <div class="d-flex flex-wrap gap-9">

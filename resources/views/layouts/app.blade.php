@@ -12,6 +12,8 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <link rel="shortcut icon" sizes="32x32" href="{{ asset('assets/svg/favicon/large.svg') }}" type="image/x-icon">
         <link rel="shortcut icon" sizes="16x16" href="{{ asset('assets/svg/favicon/small.svg') }}" type="image/x-icon">
+        <link rel="manifest" href="/manifest.json">
+        <meta name="theme-color" content="#0d6efd">
 
         {{-- Fonts --}}
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -96,6 +98,7 @@
 							<div id="kt_app_content" class="tbr_main--content app-content flex-column-fluid">
                                 <div class="app-container container-fluid h-100">
                                     @yield('content')
+                                    @include('layouts.loading-page')
                                 </div>
 							</div>
 						</div>
@@ -111,6 +114,7 @@
         <script src="{{ asset('metronic/assets/js/scripts.bundle.js') }}"></script>
         <script src="{{ asset('metronic/assets/plugins/custom/ckeditor/ckeditor-classic.bundle.js') }}"></script>
         <script src="assets/js/scripts.bundle.js"></script>
+
         <script src="https://unpkg.com/jkanban@1.3.1/dist/jkanban.min.js"></script>
         <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
         <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
@@ -126,6 +130,8 @@
         <script src="{{ asset('assets/js/default-toast.js') }}"></script>
         <script src="{{ asset('assets/js/default-ajax.js') }}"></script>
         <script src="{{ asset('assets/js/sidebar.js') }}"></script>
+        <script src="{{ asset('assets/js/loading-page.js') }}"></script>
+        <script src="{{ asset('assets/js/loading-page.js') }}"></script>
 
         <script>
             let toggle = document.getElementById("kt_app_sidebar_toggle");
@@ -135,6 +141,17 @@
                 localStorage.setItem("minimize", !minimumSidebarState);
             });
             onLoad();
+        </script>
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function () {
+                    navigator.serviceWorker.register('/serviceworker.js').then(function (registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    }, function (err) {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+                });
+            }
         </script>
         @stack('blockfoot')
 	</body>
