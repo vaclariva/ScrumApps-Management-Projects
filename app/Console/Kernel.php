@@ -4,34 +4,31 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Illuminate\Support\Facades\Log;
+use App\Console\Commands\SprintReminderCommand;
 
 class Kernel extends ConsoleKernel
 {
     /**
-     * Register the commands for the application.
+     * Register artisan commands.
      */
-    protected function commands()
-    {
-        $this->load(__DIR__.'/Commands');
-
-        require base_path('routes/console.php');
-    }
+    protected $commands = [
+        SprintReminderCommand::class,
+    ];
 
     /**
      * Define the application's command schedule.
      */
     protected function schedule(Schedule $schedule)
     {
-    Log::info('Sprint reminder schedule running...');
+        $schedule->command('sprint:remind')->dailyAt('17:05');
+    }
 
-    $schedule->command('sprint:remind')
-        ->everyMinute()
-        ->before(function () {
-            Log::info('Sprint reminder started');
-        })
-        ->after(function () {
-            Log::info('Sprint reminder finished');
-        });
+    /**
+     * Register the commands for the application.
+     */
+    protected function commands()
+    {
+        $this->load(__DIR__.'/Commands');
+        require base_path('routes/console.php');
     }
 }
