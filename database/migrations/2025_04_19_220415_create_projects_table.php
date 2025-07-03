@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->enum('status', ['done', 'in progress', 'late', 'hold'])->default('hold');
             $table->boolean('read')->default(false);
+            $table->string('trello_board_id')->nullable();
             $table->timestamps();
         });
     }

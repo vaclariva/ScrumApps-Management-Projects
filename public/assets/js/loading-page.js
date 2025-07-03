@@ -21,9 +21,11 @@ function hidePageLoader() {
 // Tampilkan loader saat halaman pertama dimuat
 document.addEventListener("DOMContentLoaded", function () {
     showPageLoader();
-    setTimeout(() => {
-        hidePageLoader();
-    }, 1500); // Atur durasi tampil di sini
+    // Jangan hide di sini, biarkan loader sampai semua resource selesai
+});
+
+window.addEventListener("load", function () {
+    hidePageLoader();
 });
 
 // Tampilkan loader saat tombol tertentu diklik (opsional)

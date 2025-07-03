@@ -20,27 +20,41 @@ class TwoFactor
     {
         $user = auth()->user();
 
-        if (
-            auth()->check()
-            && $user->twoFactors->contains('two_factor_ip', $request->ip())
-            && optional($user->twoFactors->where('two_factor_ip', $request->ip())->first())->two_factor_code
-            && $user->enabled_2fa
-        ) {
-            $two_factor = $user->twoFactors->where('two_factor_ip', $request->ip())->first();
+        // If user is not authenticated, continue
+        if (!auth()->check()) {
+            return $next($request);
+        }
 
-            if ($two_factor->two_factor_expires_at->lt(now())) {
-                $user->deleteTwoFactorCode($request->ip());
-                auth()->logout();
+        // If 2FA is not enabled, continue
+        if (!$user->enabled_2fa) {
+            return $next($request);
+        }
 
-                $this->setLastLogStatusTo($user, 'Verification');
+        // Check if user has 2FA code for this IP
+        $twoFactor = $user->twoFactors->where('two_factor_ip', $request->ip())->first();
 
-                return redirect()->route('login')
-                    ->with('error', 'The two factor code has expired. Please login again.');
-            }
-
-            if (! $request->is('verify*')) {
+        // If no 2FA code exists for this IP, redirect to verification
+        if (!$twoFactor || !$twoFactor->two_factor_code) {
+            if (!$request->is('verify*') && !$request->is('twofactor*')) {
                 return redirect()->route('twofactor.verify');
             }
+            return $next($request);
+        }
+
+        // Check if 2FA code has expired
+        if ($twoFactor->two_factor_expires_at->lt(now())) {
+            $user->deleteTwoFactorCode($request->ip());
+            auth()->logout();
+
+            $this->setLastLogStatusTo($user, 'Verification');
+
+            return redirect()->route('login')
+                ->with('error', 'The two factor code has expired. Please login again.');
+        }
+
+        // If we're on verification page and code is valid, redirect to dashboard
+        if ($request->is('verify*') || $request->is('twofactor*')) {
+            return redirect()->route('dashboard');
         }
 
         return $next($request);

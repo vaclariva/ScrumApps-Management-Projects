@@ -9,6 +9,7 @@ use App\Traits\HasTwoFactor;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
 use App\Http\Requests\Auth\LoginRequest;
 
@@ -29,6 +30,8 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
+        try {
+            info('Login attempt for email: ' . $request->email);
 
             $request->authenticate();
 
@@ -37,27 +40,52 @@ class AuthenticatedSessionController extends Controller
             $cookieLifetime = 10080; // Seminggu
             Cookie::queue(Cookie::make('status', 'admin', $cookieLifetime));
 
-            if (! $this->isIpExists($request) &&
-                ! $this->isBanned($request) &&
-                ! $this->isIpBanned($request) &&
-                $this->isTwoFactor($request)) {
+            info('User authenticated successfully: ' . $request->user()->id);
 
+            // Check if IP is banned
+            if ($this->isIpBanned($request)) {
+                info('IP is banned: ' . $request->ip());
+                Auth::logout();
+                return response()->json([
+                    'message' => trans('auth.ip-banned'),
+                ], 401);
+            }
+
+            // Check if Two Factor is enabled and IP is not verified
+            if ($this->isTwoFactor($request) && !$this->isIpExists($request)) {
+                info('2FA required for user: ' . $request->user()->id);
                 $request->user()->sendTwoFactorNotification($request);
-
                 $this->setLastLogStatusTo($request->user(), 'Verification');
 
                 return response()->json([
-                    'message' => 'Mengalihkan ..',
+                    'message' => 'Mengalihkan ke verifikasi Two Factor...',
                     'redirect' => route('twofactor.verify')
                 ], 200);
-            } else {
-
-                return response()->json([
-                    'message' => trans('auth.logged-in'),
-                    'redirect' => session()->pull('url.intended', route('dashboard'))
-                ]);
             }
 
+            // Clear user cache after successful login
+            $userId = $request->user()->id;
+            Cache::forget("user_projects_{$userId}");
+            Cache::forget("dashboard_data_{$userId}");
+
+            // Log successful login
+            $this->setLastLogStatusTo($request->user(), 'Logged In');
+
+            $redirectUrl = session()->pull('url.intended', route('dashboard'));
+            info('Login successful, redirecting to: ' . $redirectUrl);
+
+            return response()->json([
+                'message' => trans('auth.logged-in'),
+                'redirect' => $redirectUrl
+            ], 200);
+
+        } catch (\Throwable $th) {
+            info('Login Error:', [$th]);
+
+            return response()->json([
+                'message' => 'Terjadi kesalahan saat login. Silakan coba lagi.',
+            ], 500);
+        }
     }
 
     /**
@@ -66,20 +94,25 @@ class AuthenticatedSessionController extends Controller
     public function destroy(Request $request)
     {
         try {
+            $userId = $request->user()->id;
+
             Auth::guard('web')->logout();
 
             $request->session()->invalidate();
 
             $request->session()->regenerateToken();
 
+            // Clear user cache on logout
+            Cache::forget("user_projects_{$userId}");
+            Cache::forget("dashboard_data_{$userId}");
+
             return response()->json([
                 'message' => 'Berhasil keluar.',
                 'redirect' => route('login')
             ]);
 
-
-        }catch (\Throwable $th) {
-            info($th);
+        } catch (\Throwable $th) {
+            info('Logout Error:', [$th]);
 
             return response()->json([
                 'message' => 'Gagal keluar.',
@@ -100,7 +133,9 @@ class AuthenticatedSessionController extends Controller
      */
     protected function isBanned(Request $request): bool
     {
-        return $request->user()->blocked ? true : false;
+        // Return false since blocked user is not implemented
+        return false;
+        // return $request->user()->blocked ? true : false;
     }
 
     /**
@@ -118,5 +153,4 @@ class AuthenticatedSessionController extends Controller
     {
         return $request->user()->enabled_2fa ? true : false;
     }
-
 }

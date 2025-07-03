@@ -26,10 +26,41 @@ Route::get('/', function () {
     return redirect('dashboard');
 });
 
-Route::middleware(['middleware' => 'banned.ip',
+// Test route for debugging
+Route::get('/test-auth', function () {
+    if (auth()->check()) {
+        return response()->json([
+            'authenticated' => true,
+            'user' => auth()->user()->only(['id', 'name', 'email', 'role']),
+            'session_id' => session()->getId()
+        ]);
+    }
+    return response()->json(['authenticated' => false]);
+})->name('test.auth');
+
+// Test dashboard route
+Route::get('/test-dashboard', function () {
+    return response()->json([
+        'message' => 'Dashboard route is accessible',
+        'auth_check' => auth()->check(),
+        'user' => auth()->user() ? auth()->user()->only(['id', 'name']) : null
+    ]);
+})->name('test.dashboard');
+
+// Test session route
+Route::get('/test-session', function () {
+    return response()->json([
+        'session_id' => session()->getId(),
+        'session_data' => session()->all(),
+        'auth_check' => auth()->check(),
+        'user' => auth()->user() ? auth()->user()->only(['id', 'name']) : null
+    ]);
+})->name('test.session');
+
+Route::middleware([
+    'banned.ip',
     'auth.twofactor',
     'auth',
-    'web',
     'auth.is_active',
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -98,6 +129,7 @@ Route::middleware(['middleware' => 'banned.ip',
     Route::match(['PUT', 'PATCH'],'/developments/{development}', [DevelopmentController::class, 'update'])->name('developments.update');
     Route::post('/developments/{id}/update-status', [DevelopmentController::class, 'updateStatus']);
     Route::delete('/developments/{development}', [DevelopmentController::class, 'destroy'])->name('developments.destroy');
+    Route::post('/developments/integrate-trello', [DevelopmentController::class, 'integrateWithTrello'])->name('developments.integrate-trello');
 
     Route::post('/check-dev', [CheckDevController::class, 'store'])->name(name: 'check-dev.store');
     Route::match(['PUT', 'PATCH'],'/check-dev/{id}', [CheckDevController::class, 'update'])->name('check-dev.update');

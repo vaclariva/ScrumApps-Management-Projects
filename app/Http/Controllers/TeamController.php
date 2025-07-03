@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Log;
 
 class TeamController extends Controller
 {
@@ -133,6 +134,9 @@ class TeamController extends Controller
 
             $team = Team::create($data);
 
+            // Tambahkan log sebelum kirim email
+            Log::info('User yang akan dikirimi email:', [$team->user]);
+
             Mail::to($team->user->email)->send(new \App\Mail\TeamMemberAdded($team));
 
             DB::commit();
@@ -142,7 +146,14 @@ class TeamController extends Controller
                 'redirect' => url()->previous(),
             ]);
         } catch (\Throwable $th) {
-            info('Update Error:', [$th]);
+            Log::error('Error saat store team:', [
+                'error_message' => $th->getMessage(),
+                'trace' => $th->getTraceAsString(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile(),
+                'previous' => $th->getPrevious(),
+                'request_data' => $request->all(),
+            ]);
             DB::rollBack();
 
             return response()->json([

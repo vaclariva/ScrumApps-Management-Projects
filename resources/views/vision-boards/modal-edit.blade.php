@@ -9,7 +9,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Tambah Vision Board</h3>
+                <h3 class="modal-title">Edit Vision Board</h3>
             </div>
             <div class="modal-body px-10 pt-10 pb-12">
                 <form

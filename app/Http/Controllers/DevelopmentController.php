@@ -8,6 +8,7 @@ use App\Models\CheckDev;
 use App\Models\Development;
 use App\Models\Project;
 use App\Models\User;
+use App\Services\TrelloService;
 use DragonCode\Support\Facades\Helpers\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -113,7 +114,6 @@ class DevelopmentController extends Controller
 
         try {
             $data = $request->validated();
-
             $data['status'] = $data['status'] ?? 'todo';
             if ($request->hasFile('file')) {
                 $uploadedFile = $request->file('file');
@@ -136,6 +136,38 @@ class DevelopmentController extends Controller
 
             $development = Development::create($data);
 
+            // --- Integrasi ke Trello ---
+            $project = Project::find($data['project_id']);
+            if ($project && $project->trello_board_id) {
+                $trelloService = new TrelloService();
+                $lists = $trelloService->getBoardLists($project->trello_board_id);
+                $statusToListMap = [
+                    'todo' => 'To Do',
+                    'in_progress' => 'In Progress',
+                    'qa' => 'Quality Assurance',
+                    'done' => 'Done'
+                ];
+                $listName = $statusToListMap[$development->status] ?? 'To Do';
+                $listId = collect($lists)->firstWhere('name', $listName)['id'] ?? $lists[0]['id'];
+
+                $card = $trelloService->createCard($listId, $development->name, $development->desc);
+                if ($card && isset($card['id'])) {
+                    $development->trello_card_id = $card['id'];
+                    $development->save();
+
+                    // Tambahkan attachment link
+                    if (!empty($development->link)) {
+                        $trelloService->addAttachmentToCard($card['id'], $development->link, 'Link');
+                    }
+                    // Tambahkan attachment file
+                    if (!empty($development->file)) {
+                        $fileUrl = Storage::url($development->file);
+                        $trelloService->addAttachmentToCard($card['id'], asset($fileUrl), 'File');
+                    }
+                }
+            }
+            // --- End Integrasi Trello ---
+
             DB::commit();
 
             return response()->json([
@@ -152,7 +184,14 @@ class DevelopmentController extends Controller
                 ]
             ]);
         } catch (\Throwable $th) {
-            info('Store Error:', [$th]);
+            info('Store Error:', [
+                'error_message' => $th->getMessage(),
+                'trace' => $th->getTraceAsString(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile(),
+                'previous' => $th->getPrevious(),
+                'request_data' => $request->all(),
+            ]);
             DB::rollBack();
 
             return response()->json([
@@ -213,7 +252,6 @@ class DevelopmentController extends Controller
      */
     public function update(UpdateDevelopmentRequest $request, Development $development)
     {
-
         DB::beginTransaction();
 
         try {
@@ -258,6 +296,38 @@ class DevelopmentController extends Controller
             // Perbarui data development
             $development->update($data);
 
+            // --- Integrasi ke Trello ---
+            $project = $development->project;
+            if ($project && $project->trello_board_id && $development->trello_card_id) {
+                $trelloService = new TrelloService();
+                $lists = $trelloService->getBoardLists($project->trello_board_id);
+                $statusToListMap = [
+                    'todo' => 'To Do',
+                    'in_progress' => 'In Progress',
+                    'qa' => 'Quality Assurance',
+                    'done' => 'Done'
+                ];
+                $listName = $statusToListMap[$development->status] ?? 'To Do';
+                $listId = collect($lists)->firstWhere('name', $listName)['id'] ?? $lists[0]['id'];
+
+                $trelloService->updateCard($development->trello_card_id, [
+                    'name' => $development->name,
+                    'desc' => $development->desc,
+                    'idList' => $listId
+                ]);
+
+                // Tambahkan attachment link
+                if (!empty($development->link)) {
+                    $trelloService->addAttachmentToCard($development->trello_card_id, $development->link, 'Link');
+                }
+                // Tambahkan attachment file
+                if (!empty($development->file)) {
+                    $fileUrl = Storage::url($development->file);
+                    $trelloService->addAttachmentToCard($development->trello_card_id, asset($fileUrl), 'File');
+                }
+            }
+            // --- End Integrasi Trello ---
+
             DB::commit();
 
             return response()->json([
@@ -281,7 +351,14 @@ class DevelopmentController extends Controller
                 ]
             ]);
         } catch (\Throwable $th) {
-            info('Update Error:', [$th]);
+            info('Update Error:', [
+                'error_message' => $th->getMessage(),
+                'trace' => $th->getTraceAsString(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile(),
+                'previous' => $th->getPrevious(),
+                'request_data' => $request->all(),
+            ]);
             DB::rollBack();
 
             return response()->json([
@@ -316,6 +393,26 @@ class DevelopmentController extends Controller
         $development->status = $convertedStatus;
         $development->save();
 
+        // --- Update status di Trello ---
+        $project = $development->project;
+        if ($project && $project->trello_board_id && $development->trello_card_id) {
+            $trelloService = new TrelloService();
+            $lists = $trelloService->getBoardLists($project->trello_board_id);
+            $statusToListMap = [
+                'todo' => 'To Do',
+                'in_progress' => 'In Progress',
+                'qa' => 'Quality Assurance',
+                'done' => 'Done'
+            ];
+            $listName = $statusToListMap[$development->status] ?? 'To Do';
+            $listId = collect($lists)->firstWhere('name', $listName)['id'] ?? $lists[0]['id'];
+
+            $trelloService->updateCard($development->trello_card_id, [
+                'idList' => $listId
+            ]);
+        }
+        // --- End update Trello ---
+
         return response()->json(['message' => 'Status berhasil diperbarui.']);
     }
 
@@ -329,6 +426,12 @@ class DevelopmentController extends Controller
         try {
             if ($development->file && Storage::disk('public')->exists($development->file)) {
                 Storage::disk('public')->delete($development->file);
+            }
+
+            // --- Hapus card di Trello ---
+            if ($development->trello_card_id) {
+                $trelloService = new TrelloService();
+                $trelloService->deleteCard($development->trello_card_id);
             }
 
             $development->delete();
@@ -346,6 +449,109 @@ class DevelopmentController extends Controller
             return response()->json([
                 'message' => 'Terjadi kesalahan saat menghapus data.',
                 'status' => false
+            ], 500);
+        }
+    }
+
+    /**
+     * Integrasi dengan Trello
+     */
+    public function integrateWithTrello(Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            $projectId = $request->input('project_id');
+            $project = Project::findOrFail($projectId);
+
+            // Cek apakah sudah terintegrasi
+            if ($project->trello_board_id) {
+                return response()->json([
+                    'message' => 'Proyek sudah terintegrasi dengan Trello',
+                    'board_url' => (new TrelloService())->getBoardUrl($project->trello_board_id),
+                    'already_integrated' => true
+                ]);
+            }
+
+            $trelloService = new TrelloService();
+
+            // Buat board di Trello
+            $boardData = $trelloService->createBoard(
+                $project->name,
+                $project->label
+            );
+
+            if (!$boardData) {
+                throw new \Exception('Gagal membuat board di Trello');
+            }
+
+            // Simpan board ID ke database
+            $project->trello_board_id = $boardData['id'];
+            $project->save();
+
+            // Ambil semua development untuk proyek ini
+            $developments = Development::where('project_id', $projectId)->get();
+            $lists = $trelloService->getBoardLists($boardData['id']);
+
+            // Mapping status ke list Trello
+            $statusToListMap = [
+                'todo' => 'To Do',
+                'in_progress' => 'In Progress',
+                'qa' => 'Quality Assurance',
+                'done' => 'Done'
+            ];
+
+            // Buat card untuk setiap development
+            foreach ($developments as $development) {
+                $listName = $statusToListMap[$development->status] ?? 'To Do';
+                $listId = collect($lists)->firstWhere('name', $listName)['id'] ?? $lists[0]['id'];
+
+                // Ambil checklist untuk development ini
+                $checklist = CheckDev::where('dev_id', $development->id)
+                    ->get()
+                    ->map(function($item) {
+                        return ['name' => $item->name];
+                    })
+                    ->toArray();
+
+                // Buat card di Trello
+                $trelloService->createCard(
+                    $listId,
+                    $development->name,
+                    $development->desc,
+                    $checklist
+                );
+            }
+
+            // Tambahkan anggota tim ke board Trello
+            $teams = $project->teams;
+            foreach ($teams as $team) {
+                if ($team->user && $team->user->email) {
+                    $trelloService->addMemberToBoard($boardData['id'], $team->user->email);
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Berhasil terintegrasi dengan Trello!',
+                'board_url' => $trelloService->getBoardUrl($boardData['id']),
+                'already_integrated' => false
+            ]);
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            Log::error('Error saat integrasi Trello:', [
+                'error_message' => $th->getMessage(),
+                'trace' => $th->getTraceAsString(),
+                'line' => $th->getLine(),
+                'file' => $th->getFile(),
+                'previous' => $th->getPrevious(),
+                'request_data' => $request->all(),
+            ]);
+
+            return response()->json([
+                'message' => 'Terjadi kesalahan saat integrasi dengan Trello: ' . $th->getMessage(),
             ], 500);
         }
     }

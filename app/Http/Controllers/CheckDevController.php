@@ -8,6 +8,8 @@ use App\Models\Development;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Services\TrelloService;
+use Illuminate\Support\Facades\Http;
 
 class CheckDevController extends Controller
 {
@@ -41,6 +43,27 @@ class CheckDevController extends Controller
             $data['status'] = $data['status'] ?? 'inactive';
 
             $checkDev = CheckDev::create($data);
+
+            // Ambil development terkait
+            $development = Development::find($checkDev->dev_id ?? $data['dev_id']);
+            if ($development && $development->trello_card_id) {
+                $trelloService = new TrelloService();
+                $checklistGroups = CheckDev::where('dev_id', $development->id)
+                    ->get()
+                    ->groupBy('category')
+                    ->map(function($items, $category) {
+                        return [
+                            'category' => $category ?: 'Checklist',
+                            'items' => $items->map(function($item) {
+                                return [
+                                    'name' => $item->name,
+                                    'checked' => $item->status === 'active',
+                                ];
+                            })->toArray()
+                        ];
+                    })->values()->toArray();
+                $trelloService->syncChecklist($development->trello_card_id, $checklistGroups);
+            }
 
             DB::commit();
 
@@ -90,6 +113,27 @@ class CheckDevController extends Controller
             $checkDev = CheckDev::findOrFail($id);
             $checkDev->update($data);
 
+            // Ambil development terkait
+            $development = Development::find($checkDev->dev_id ?? $data['dev_id']);
+            if ($development && $development->trello_card_id) {
+                $trelloService = new TrelloService();
+                $checklistGroups = CheckDev::where('dev_id', $development->id)
+                    ->get()
+                    ->groupBy('category')
+                    ->map(function($items, $category) {
+                        return [
+                            'category' => $category ?: 'Checklist',
+                            'items' => $items->map(function($item) {
+                                return [
+                                    'name' => $item->name,
+                                    'checked' => $item->status === 'active',
+                                ];
+                            })->toArray()
+                        ];
+                    })->values()->toArray();
+                $trelloService->syncChecklist($development->trello_card_id, $checklistGroups);
+            }
+
             DB::commit();
 
             return response()->json([
@@ -115,6 +159,27 @@ class CheckDevController extends Controller
         try {
             DB::beginTransaction();
             $checkDev->delete();
+
+            // Ambil development terkait
+            $development = Development::find($checkDev->dev_id ?? $checkDev->dev_id);
+            if ($development && $development->trello_card_id) {
+                $trelloService = new TrelloService();
+                $checklistGroups = CheckDev::where('dev_id', $development->id)
+                    ->get()
+                    ->groupBy('category')
+                    ->map(function($items, $category) {
+                        return [
+                            'category' => $category ?: 'Checklist',
+                            'items' => $items->map(function($item) {
+                                return [
+                                    'name' => $item->name,
+                                    'checked' => $item->status === 'active',
+                                ];
+                            })->toArray()
+                        ];
+                    })->values()->toArray();
+                $trelloService->syncChecklist($development->trello_card_id, $checklistGroups);
+            }
 
             DB::commit();
 

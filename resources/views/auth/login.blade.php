@@ -78,9 +78,28 @@
             anim="ripple" type="submit" class="btn tbr_btn tbr_btn--primary w-100">
             Masuk
         </button>
+
+        <!-- Temporary debug button -->
+        <button type="button" onclick="testAuth()" class="btn btn-secondary w-100 mt-3">
+            Test Auth Status
+        </button>
     </form>
 
     @push('blockfoot')
         <script src="{{ asset('assets/js/auth/login.js') }}"></script>
+        <script>
+            function testAuth() {
+                fetch('/test-auth')
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Auth status:', data);
+                        alert('Auth status: ' + JSON.stringify(data));
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error: ' + error);
+                    });
+            }
+        </script>
     @endpush
 @endsection

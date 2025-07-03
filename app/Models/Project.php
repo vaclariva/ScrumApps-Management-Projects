@@ -21,7 +21,7 @@ class Project extends Model
         'end_date',
         'user_id',
         'status',
-        'read'
+        'trello_board_id'
     ];
 
     protected $casts = [

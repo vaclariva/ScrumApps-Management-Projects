@@ -7,6 +7,9 @@ $(".tbr_main_form").on("submit", function (e) {
     var submitButton = $(this).find("button[type=submit]");
     var submitButtonHtml = submitButton.html();
     var formData = new FormData(this);
+
+    console.log('Form submitted:', $(this).attr("action"));
+
     $.ajax({
         url: $(this).attr("action"),
         method: $(this).attr("method"),
@@ -20,6 +23,8 @@ $(".tbr_main_form").on("submit", function (e) {
             );
         },
         success: async function (res) {
+            console.log('Login success response:', res);
+
             if (!formEl.attr("data-no-toast-success")) {
                 showSuccessToast({ message: res?.message ?? "Success" });
             }
@@ -27,14 +32,26 @@ $(".tbr_main_form").on("submit", function (e) {
             invokeCallback({formEl: formEl, callback: "data-success-callback"})
 
             if (res?.redirect) {
+                console.log('Redirecting to:', res.redirect);
+                console.log('Current location:', window.location.href);
+
+                // Force immediate redirect
+                window.location.href = res.redirect;
+
+                // Fallback redirect after 1 second
                 setTimeout(function () {
+                    console.log('Fallback redirect to:', res.redirect);
                     window.location.href = res.redirect;
                 }, 1000);
+            } else {
+                console.log('No redirect URL in response');
             }
             submitButton.removeAttr("disabled");
             submitButton.html(submitButtonHtml);
         },
         error: function (xhr, status, error) {
+            console.log('Login error:', xhr.responseJSON);
+
             if (typeof xhr.responseJSON?.errors === "object") {
                 errorList = xhr.responseJSON?.errors;
                 if (!formEl.attr("data-no-toast-error")) {

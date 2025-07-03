@@ -16,35 +16,35 @@ class UserSeeder extends Seeder
         User::factory()
             ->create([
                 'name' => 'Super Admin ScrumApps',
-                'email' => 'tebar.development@gmail.com',
-                'password' => bcrypt('tebar!Dev9'),
+                'email' => 'superadmin@gmail.com',
+                'password' => bcrypt('scrumapps123'),
                 'role' => 'Superadmin',
                 'phone_number' => '081234567891'
             ]);
 
         User::factory()
             ->create([
-                'name' => 'Tebar Support',
-                'email' => 'tebar.support@gmail.com',
-                'password' => bcrypt('tebar!Dev9'),
+                'name' => 'Support',
+                'email' => 'support@gmail.com',
+                'password' => bcrypt('scrumapps123'),
                 'role' => 'ProductOwner',
                 'phone_number' => '081234567892'
             ]);
 
         User::factory()
             ->create([
-                'name' => 'Clariva',
-                'email' => 'clariva@gmail.com',
-                'password' => bcrypt('tebar!Dev9'),
+                'name' => 'Clariva PO',
+                'email' => 'vaclariva@gmail.com',
+                'password' => bcrypt('scrumapps123'),
                 'role' => 'ProductOwner',
                 'phone_number' => '081234567893'
             ]);
 
         User::factory()
             ->create([
-                'name' => 'Meydieta',
-                'email' => 'meydieta@gmail.com',
-                'password' => bcrypt('tebar!Dev9'),
+                'name' => 'Meydieta DT',
+                'email' => 'meyclariva@gmail.com',
+                'password' => bcrypt('scrumapps123'),
                 'role' => 'TeamDeveloper',
                 'phone_number' => '081234567894'
             ]);

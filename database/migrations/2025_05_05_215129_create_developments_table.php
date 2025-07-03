@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('file')->nullable();
             $table->enum('status', ['todo', 'in_progress', 'qa', 'done'])->default('todo');
             $table->unsignedBigInteger('project_id')->nullable();
+            $table->string('trello_card_id')->nullable();
             $table->timestamps();
 
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');

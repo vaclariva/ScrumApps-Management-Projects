@@ -16,15 +16,13 @@ class IsActive
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user()->blocked) {
-            Auth::logout();
-
-            $request->session()->invalidate();
-
-            $request->session()->regenerateToken();
-
-            return redirect()->route('login')->withErrors(trans('auth.is-active'));
-        }
+        // Skip blocked user check since it's not implemented
+        // if ($request->user()->blocked) {
+        //     Auth::logout();
+        //     $request->session()->invalidate();
+        //     $request->session()->regenerateToken();
+        //     return redirect()->route('login')->withErrors(trans('auth.is-active'));
+        // }
 
         return $next($request);
     }

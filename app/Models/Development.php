@@ -16,6 +16,7 @@ class Development extends Model
         'file',
         'status',
         'project_id',
+        'trello_card_id',
     ];
 
     public function project()
