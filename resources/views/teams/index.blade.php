@@ -34,7 +34,7 @@
         </div>
         <div class="card-body">
             <div class="d-flex flex-column flex-lg-row justify-content-lg-between gap-4 mb-8">
-                @if (auth()->user()->isSuperAdmin || auth()->user()->isProductOwner)
+                @if (auth()->user()->isSuperAdmin || auth()->user()->isBusinessAnalyst)
                     <a href="#" data-bs-toggle="modal" data-bs-target="#modal_create_teams" anim="ripple" class="btn tbr_btn tbr_btn--primary d-flex flex-center gap-2">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path opacity="0.4" d="M17.5724 6.50367V6.50573V13.4891C17.5724 14.8566 17.1677 15.8581 16.5087 16.5171C15.8498 17.176 14.8482 17.5807 13.4807 17.5807H6.50573C5.13823 17.5807 4.1369 17.176 3.47806 16.5164C2.81911 15.8566 2.41406 14.8529 2.41406 13.4807V6.50573C2.41406 5.13822 2.81879 4.13666 3.47773 3.47773C4.13666 2.81879 5.13822 2.41406 6.50573 2.41406H13.4891C14.8567 2.41406 15.858 2.81885 16.5157 3.47739C17.1733 4.13578 17.5762 5.13663 17.5724 6.50367Z" fill="white" stroke="white" stroke-width="1.5"/>
@@ -68,7 +68,7 @@
             const urlDatatable = '{{ route('teams.list', $project->id) }}';
             const dataDatatable = {};
             console.log("URL Datatable:", urlDatatable);
-            const canDelete = {{ (auth()->user()->isSuperAdmin || auth()->user()->isProductOwner) ? 'true' : 'false' }};
+            const canDelete = {{ (auth()->user()->isSuperAdmin || auth()->user()->isBusinessAnalyst) ? 'true' : 'false' }};
         </script>
         <script src="{{ asset('metronic/assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
         <script src="{{ asset('assets/js/default-datatable.js') }}"></script>

@@ -9,7 +9,7 @@
         </h1>
 
         <p>
-        Anda telah ditambahkan sebagai <strong>Product Owner</strong>
+        Anda telah ditambahkan sebagai <strong>Business Analyst</strong>
         pada proyek <strong>{{ $project->name }}</strong>.
         </p>
 

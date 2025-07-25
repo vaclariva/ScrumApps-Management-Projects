@@ -78,10 +78,16 @@
             anim="ripple" type="submit" class="btn tbr_btn tbr_btn--primary w-100">
             Masuk
         </button>
-
-        <!-- Temporary debug button -->
-        <button type="button" onclick="testAuth()" class="btn btn-secondary w-100 mt-3">
-            Test Auth Status
+        <button
+            type="button"
+            class="btn tbr_btn tbr_btn--primary w-100 mt-3"
+            id="btn-google-login"
+        >
+            <i class="ki-duotone ki-google fs-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+            </i>
+            Login dengan Google
         </button>
     </form>
 
@@ -100,6 +106,11 @@
                         alert('Error: ' + error);
                     });
             }
+        </script>
+        <script>
+            document.getElementById('btn-google-login').addEventListener('click', function() {
+                window.location.href = "{{ route('auth.google') }}";
+            });
         </script>
     @endpush
 @endsection

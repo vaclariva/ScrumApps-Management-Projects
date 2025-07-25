@@ -18,14 +18,6 @@ use Illuminate\Support\ServiceProvider;
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        //
-    }
-
-    /**
      * Bootstrap any application services.
      */
     public function boot(): void
@@ -33,26 +25,37 @@ class AppServiceProvider extends ServiceProvider
         Carbon::setLocale('id');
         Schema::defaultStringLength(191);
 
-        // Re-enabled with better error handling
         try {
             $setting = $this->getSettingData();
 
-            config([
-                'mail.mailers.smtp.host'       => $setting->smtp_host ?? env('MAIL_HOST', 'smtp.mailgun.org'),
-                'mail.mailers.smtp.encryption' => $setting->type_of_encryption ?? env('MAIL_ENCRYPTION', 'tls'),
-                'mail.mailers.smtp.port'       => $setting->smtp_port ?? env('MAIL_PORT', 587),
-                'mail.mailers.smtp.username'   => $setting->smtp_username ?? env('MAIL_USERNAME'),
-                'mail.mailers.smtp.password'   => $setting->smtp_password ?? env('MAIL_PASSWORD'),
-                'mail.from.address'            => $setting->mail_from_address ?? env('MAIL_FROM_ADDRESS'),
-                'mail.from.name'               => $setting->from_name ?? env('MAIL_FROM_NAME')
-            ]);
+            // Cek apakah email host sudah dikonfigurasi
+            if ($setting && $setting->smtp_host && $setting->smtp_username && $setting->smtp_password) {
+                config([
+                    'mail.mailers.smtp.host'       => $setting->smtp_host,
+                    'mail.mailers.smtp.encryption' => $setting->type_of_encryption ?? 'tls',
+                    'mail.mailers.smtp.port'       => $setting->smtp_port ?? ($setting->type_of_encryption == 'ssl' ? 465 : 587),
+                    'mail.mailers.smtp.username'   => $setting->smtp_username,
+                    'mail.mailers.smtp.password'   => $setting->smtp_password,
+                    'mail.from.address'            => $setting->mail_from_address,
+                    'mail.from.name'               => $setting->from_name
+                ]);
+            } else {
+                // Jika email host belum dikonfigurasi, gunakan log driver
+                config([
+                    'mail.default' => 'log',
+                    'mail.from.address' => 'noreply@example.com',
+                    'mail.from.name' => 'System'
+                ]);
+            }
         } catch (\Throwable $th) {
-            // If database is not available, use env values
-            info('AppServiceProvider: Could not load settings from database, using env values');
+            info('AppServiceProvider: Could not load settings from database, using log driver');
+            config([
+                'mail.default' => 'log',
+                'mail.from.address' => 'noreply@example.com',
+                'mail.from.name' => 'System'
+            ]);
         }
 
-        // Optimized view composer with caching
-        // Re-enabled with better error handling
         view()->composer('*', function ($view) {
             try {
                 $user = auth()->user();
@@ -63,12 +66,8 @@ class AppServiceProvider extends ServiceProvider
                     return;
                 }
 
-                // Cache key based on user
-                $cacheKey = "user_projects_{$user->id}";
-                $cacheDuration = 300; // 5 minutes
-
-                $projectData = Cache::remember($cacheKey, $cacheDuration, function () use ($user) {
-                    // Optimized query with eager loading
+                // Hapus cache untuk real-time notifications
+                $projectData = (function () use ($user) {
                     $projects = Project::with(['user', 'sprints', 'readers'])
                         ->when($user->role !== 'Superadmin', function ($query) use ($user) {
                             $query->where(function ($q) use ($user) {
@@ -105,6 +104,8 @@ class AppServiceProvider extends ServiceProvider
                             $status = $completedSprints < $totalSprints ? 'IN PROGRESS' : 'DONE';
                         }
 
+                        $status = strtoupper($status);
+
                         if ($project->status !== $status) {
                             $projectsToUpdate[] = [
                                 'id' => $project->id,
@@ -113,27 +114,42 @@ class AppServiceProvider extends ServiceProvider
                         }
 
                         if (in_array($status, ['DONE', 'LATE'])) {
-                            $filteredProjects[] = $project;
-
-                            // Check if project is read using relationship
-                            $isRead = $project->readers()
+                            // Cek apakah user sudah membaca notifikasi ini
+                            $existingRead = DB::table('project_user_reads')
+                                ->where('project_id', $project->id)
                                 ->where('user_id', $user->id)
-                                ->where('read', true)
-                                ->exists();
+                                ->first();
 
-                            if (!$isRead) {
+                            if (!$existingRead || !$existingRead->read) {
                                 $unreadCount++;
 
-                                // Insert read record if not exists
-                                $project->readers()->updateOrCreate(
-                                    ['user_id' => $user->id],
-                                    ['read' => false, 'created_at' => now(), 'updated_at' => now()]
+                                // Pastikan record ada di tabel project_user_reads
+                                DB::table('project_user_reads')->updateOrInsert(
+                                    [
+                                        'project_id' => $project->id,
+                                        'user_id' => $user->id
+                                    ],
+                                    [
+                                        'read' => false,
+                                        'created_at' => now(),
+                                        'updated_at' => now()
+                                    ]
                                 );
+
+                                // Set read status ke project object
+                                $project->read = false;
+
+                                // Debug log
+                                info("Created/Updated notification record for user {$user->id} on project {$project->id} (status: {$status})");
+                            } else {
+                                // Set read status ke project object
+                                $project->read = true;
                             }
+
+                            $filteredProjects[] = $project;
                         }
                     }
 
-                    // Update project statuses in batch
                     if (!empty($projectsToUpdate)) {
                         foreach ($projectsToUpdate as $projectData) {
                             Project::where('id', $projectData['id'])->update(['status' => $projectData['status']]);
@@ -144,13 +160,12 @@ class AppServiceProvider extends ServiceProvider
                         'filteredProjects' => $filteredProjects,
                         'unreadCount' => $unreadCount
                     ];
-                });
+                })();
 
                 $view->with('filteredProjects', $projectData['filteredProjects']);
                 $view->with('unreadCount', $projectData['unreadCount']);
 
             } catch (\Throwable $th) {
-                // If there's any error, set default values
                 info('AppServiceProvider Error:', [$th]);
                 $view->with('filteredProjects', []);
                 $view->with('unreadCount', 0);
@@ -175,7 +190,6 @@ class AppServiceProvider extends ServiceProvider
             info('Setting Error:', [$th]);
         }
 
-        // Return default setting object
         return new \App\Models\Setting();
     }
 }

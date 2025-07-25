@@ -16,6 +16,12 @@ class SprintReminderCommand extends Command
 
     public function handle()
     {
+        // Cek apakah email host sudah dikonfigurasi
+        if (!\App\Helpers\Helper::isEmailHostConfigured()) {
+            Log::warning('Sprint reminder tidak dikirim karena email host belum dikonfigurasi');
+            return;
+        }
+
         $sprints = Sprint::where('end_date', '>=', now()->startOfDay())
                         ->where('end_date', '<=', now()->copy()->addDays(3)->endOfDay())
                         ->where('status', 'inactive')
@@ -23,10 +29,10 @@ class SprintReminderCommand extends Command
 
         foreach ($sprints as $sprint) {
             $project = $sprint->project;
-            $productOwner = $project->productOwner;
+            $businessAnalyst = $project->businessAnalyst;
 
-            if (!$productOwner || !$productOwner->email) {
-                Log::info("⛔ Sprint '{$sprint->name}' tidak punya Product Owner atau email.");
+            if (!$businessAnalyst || !$businessAnalyst->email) {
+                Log::info("⛔ Sprint '{$sprint->name}' tidak punya Business Analyst atau email.");
                 continue;
             }
 
@@ -34,14 +40,19 @@ class SprintReminderCommand extends Command
             $endDate = \Carbon\Carbon::parse($sprint->end_date);
             $daysLeft = floor($now->diffInDays($endDate, false));
 
-            if (in_array($daysLeft, [3, 2, 1])) {
-                Mail::to($productOwner->email)->send(new SprintReminder($sprint, $daysLeft));
-            }
-            elseif ($now->isSameDay($endDate) && $now->greaterThan($endDate)) {
-                Mail::to($productOwner->email)->send(new SprintReminder($sprint, 0));
-            }
-            else {
+            if (in_array($daysLeft, [3, 2, 1, 0])) {
+                Mail::to($businessAnalyst->email)->send(new SprintReminder($sprint, $daysLeft));
+            } else {
                 Log::info("✅ Sprint '{$sprint->name}' belum perlu dikirimi reminder.");
+            }
+
+            // Kirim ke semua anggota tim developer
+            $teamMembers = $project->teams; // relasi ke Team
+            foreach ($teamMembers as $team) {
+                $developer = $team->user; // pastikan relasi 'user' ada di model Team
+                if ($developer && $developer->email) {
+                    Mail::to($developer->email)->send(new SprintReminder($sprint, $daysLeft));
+                }
             }
         }
     }

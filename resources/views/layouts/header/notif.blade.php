@@ -50,12 +50,13 @@
                     <div class="scroll-y mh-325px my-5 px-8">
                         @foreach($filteredProjects as $project)
                             @php
-                                $statusClass = $project->status === 'DONE' ? 'success' : 'danger';
-                                $statusText = $project->status === 'DONE'
+                                $statusClass = $project->status === 'done' ? 'success' : 'danger';
+                                $statusText = $project->status === 'done'
                                     ? "{$project->name} selesai dikembangkan"
                                     : "{$project->name} melewati waktu pengembangan";
                                 $icon = $project->icon ?? 'ki-technology-2';
                                 $formattedDate = \Carbon\Carbon::parse($project->end_date)->translatedFormat('d F Y, H:i');
+                                $status = strtoupper($project->status);
                             @endphp
 
                             <div class="d-flex flex-stack py-4">
@@ -76,7 +77,7 @@
                                 </div>
                                 <form method="POST" action="{{ route('notif.read', $project->id) }}" class="ms-auto">
                                     @csrf
-                                    @if(!$project->read == 0)
+                                    @if($project->read == false)
                                         <button anim="ripple" onclick="readNotif({el: this})" class="btn btn-sm btn-light-danger btn-xs">
                                             Dibaca
                                             <span class="loader d-none spinner-border spinner-border-sm"></span>

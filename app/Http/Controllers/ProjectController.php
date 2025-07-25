@@ -19,7 +19,7 @@ class ProjectController extends Controller
         $user = auth()->user();
         if ($user->role === 'Superadmin') {
             $projects = Project::with('user')->latest()->get();
-        } elseif ($user->role === 'ProductOwner') {
+        } elseif ($user->role === 'BusinessAnalyst') {
             $projects = Project::with('user')
                 ->where('user_id', $user->id)
                 ->latest()
@@ -36,7 +36,7 @@ class ProjectController extends Controller
         } else {
             $projects = collect();
         }
-        $users = User::where('role', 'ProductOwner')->get();
+        $users = User::where('role', 'BusinessAnalyst')->get();
         return view('projects.index', compact('projects', 'users'));
     }
 
@@ -103,7 +103,7 @@ class ProjectController extends Controller
         DB::beginTransaction();
 
         try {
-            $users = User::where('role', 'ProductOwner')->get();
+            $users = User::where('role', 'BusinessAnalyst')->get();
             $data = $request->validated();
             $data['status'] = $data['status'] ?? 'hold';
 
@@ -137,7 +137,12 @@ class ProjectController extends Controller
 
             DB::commit();
 
-            Mail::to($project->user->email)->send(new \App\Mail\ProjectRemoved($project));
+            // Cek apakah email host sudah dikonfigurasi sebelum mengirim email
+            if (\App\Helpers\Helper::isEmailHostConfigured()) {
+                Mail::to($project->user->email)->send(new \App\Mail\ProjectRemoved($project));
+            } else {
+                \Log::warning('Email tidak terkirim karena email host belum dikonfigurasi');
+            }
 
             return response()->json([
                 'message' => trans('Berhasil dihapus.'),

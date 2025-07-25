@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{{ asset('metronic/assets/plugins/custom/datatables/datatables.bundle.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/projects/index.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/projects/modal.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/backlogs/index.css') }}">
 @endpush
 
 @section('content')

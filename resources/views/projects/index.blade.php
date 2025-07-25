@@ -22,7 +22,7 @@
         $projectCount = count($projects);
     @endphp
 
-    @if(in_array($userRole, ['ProductOwner', 'TeamDeveloper']))
+    @if(in_array($userRole, ['BusinessAnalyst', 'TeamDeveloper']))
     @if($projectCount === 0)
         <div class="d-flex flex-column flex-center h-100">
             <div class="px-20 px-lg-3">
@@ -61,7 +61,7 @@
                     Halaman ini berisi daftar proyek yang ada sesuai dengan hak akses dan kontribusi pengguna.
                 </span>
             </div>
-            @include('include.default-datatable-search', ['tableId' => 'table-user', 'fullInResponsive' => true])
+           {{-- @include('include.default-datatable-search', ['tableId' => 'table-user', 'fullInResponsive' => true]) --}}
         </div>
         <div class="card-body">
             <div class="d-flex flex-wrap gap-9">

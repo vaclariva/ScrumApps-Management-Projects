@@ -13,6 +13,7 @@
         "ladumor/laravel-pwa": "^0.0.5",
         "laravel-lang/common": "^6.4",
         "laravel/framework": "^11.9",
+        "laravel/socialite": "^5.21",
         "laravel/tinker": "^2.9",
         "predis/predis": "^3.0",
         "spatie/db-dumper": "^3.6",

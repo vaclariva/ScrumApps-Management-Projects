@@ -20,13 +20,13 @@ use App\Http\Controllers\SprintController;
 use App\Http\Controllers\VisionBoardController;
 use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\DataTables;
+use App\Http\Controllers\Auth\GoogleController;
 
 
 Route::get('/', function () {
     return redirect('dashboard');
 });
 
-// Test route for debugging
 Route::get('/test-auth', function () {
     if (auth()->check()) {
         return response()->json([
@@ -38,7 +38,6 @@ Route::get('/test-auth', function () {
     return response()->json(['authenticated' => false]);
 })->name('test.auth');
 
-// Test dashboard route
 Route::get('/test-dashboard', function () {
     return response()->json([
         'message' => 'Dashboard route is accessible',
@@ -47,7 +46,6 @@ Route::get('/test-dashboard', function () {
     ]);
 })->name('test.dashboard');
 
-// Test session route
 Route::get('/test-session', function () {
     return response()->json([
         'session_id' => session()->getId(),
@@ -163,5 +161,8 @@ Route::get('/coming-soon', function(){
 Route::get('ip-banned', function () {
     return view('errors.ip-banned');
 })->name('ip.banned');
+
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 require __DIR__.'/auth.php';

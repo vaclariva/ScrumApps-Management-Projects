@@ -135,10 +135,10 @@ class User extends Authenticatable
     /**
      * Define accessor for is product owner.
      */
-    protected function isProductOwner(): Attribute
+    protected function isBusinessAnalyst(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => $this->role == 'ProductOwner'
+            get: fn($value) => $this->role == 'BusinessAnalyst'
         );
     }
 

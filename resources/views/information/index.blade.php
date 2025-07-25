@@ -35,7 +35,7 @@
                     <div id="kt_accordion_2_item_2" class="collapse fs-6 ps-10 text-gray-600" data-bs-parent="#kt_accordion_2">
                         Dalam sistem menggunakan pengguna yang terdiri dari:
                             <br>
-                            - Product Owner (Seorang yang yang memberikan detail informasi yang diperoleh dari clien sebagai requirement proyek yang akan dikembangkan)
+                            - Business Analyst (Seorang yang yang memberikan detail informasi yang diperoleh dari clien sebagai requirement proyek yang akan dikembangkan)
                             <br>
                             - Tim Developer (Terdiri dari Backend, Frontend, Desaigner UI/UX, dan Sofware Tester)
                     </div>
@@ -50,7 +50,7 @@
                     <div id="kt_accordion_2_item_3" class="collapse fs-6 ps-10 text-gray-600" data-bs-parent="#kt_accordion_2">
                         Setiap pengguna memiliki hak akses untuk menjaga keamanan dan keteraturan informasi yang terdiri dar:
                         <br>
-                        - Hak Akses Product Owner (Berperan mengeola detail Vision Board dan Backlog dari peoyek dan mengundang Tim Developer untuk memulai proyek)
+                        - Hak Akses Business Analyst (Berperan mengeola detail Vision Board dan Backlog dari peoyek dan mengundang Tim Developer untuk memulai proyek)
                         <br>
                         - Hak Akses Tim Developer (Berperan mengerjakan tugas sesuai dengan ketentuan saat perencanaan proyek pada menu Tim Developer dalam kanban)
                     </div>

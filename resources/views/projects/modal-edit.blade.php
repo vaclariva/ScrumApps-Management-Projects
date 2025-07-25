@@ -86,9 +86,9 @@
                             </div>
                         </div>
                         <div class="form-group mb-8">
-                            <label for="name" class="h6 tbr_font--weight-bold mt-4 d-block">Product Owner</label>
+                            <label for="name" class="h6 tbr_font--weight-bold mt-4 d-block">Business Analyst</label>
                             <select name="user_id" class="tbr_form form-control form-select form-select-solid" id="user" data-control="select2">
-                                <option value="" selected disabled>Pilih Product Owner</option>
+                                <option value="" selected disabled>Pilih Business Analyst</option>
                                 @foreach ($users as $user)
                                     <option value="{{ $user->id }}"
                                         data-image="{{ $user->photo_path ? asset($user->photo_path) : asset('assets/images/avatar.png') }}"

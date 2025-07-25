@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
+use App\Models\User;
 
 class ClearProjectCache extends Command
 {
@@ -12,43 +13,45 @@ class ClearProjectCache extends Command
      *
      * @var string
      */
-    protected $signature = 'cache:clear-projects {user_id?}';
+    protected $signature = 'project:clear-cache {--user-id= : Specific user ID to clear cache}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Clear project-related caches for better performance';
+    protected $description = 'Clear project cache to force refresh notifications';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $userId = $this->argument('user_id');
+        $userId = $this->option('user-id');
 
         if ($userId) {
-            // Clear specific user cache
-            Cache::forget("user_projects_{$userId}");
-            Cache::forget("dashboard_data_{$userId}");
-            $this->info("Cleared cache for user ID: {$userId}");
+            $this->clearUserCache($userId);
         } else {
-            // Clear all project-related caches
-            $this->info('Clearing all project-related caches...');
+            $users = User::all();
+            $this->info("Clearing cache for {$users->count()} users...");
 
-            // Get all cache keys and clear project-related ones
-            $keys = Cache::get('cache_keys', []);
-
-            foreach ($keys as $key) {
-                if (str_contains($key, 'user_projects_') || str_contains($key, 'dashboard_data_')) {
-                    Cache::forget($key);
-                }
+            foreach ($users as $user) {
+                $this->clearUserCache($user->id);
             }
-
-            $this->info('All project caches cleared successfully!');
         }
 
-        return Command::SUCCESS;
+        $this->info('Project cache cleared successfully!');
+    }
+
+    private function clearUserCache($userId)
+    {
+        $cacheKey = "user_projects_{$userId}";
+        $deleted = Cache::forget($cacheKey);
+
+        if ($deleted) {
+            $this->info("Cache cleared for user {$userId}");
+        } else {
+            $this->line("No cache found for user {$userId}");
+        }
     }
 }

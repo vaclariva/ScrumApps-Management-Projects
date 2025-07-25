@@ -31,18 +31,14 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request)
     {
         try {
-            info('Login attempt for email: ' . $request->email);
 
             $request->authenticate();
 
             $request->session()->regenerate();
 
-            $cookieLifetime = 10080; // Seminggu
+            $cookieLifetime = 120;
             Cookie::queue(Cookie::make('status', 'admin', $cookieLifetime));
 
-            info('User authenticated successfully: ' . $request->user()->id);
-
-            // Check if IP is banned
             if ($this->isIpBanned($request)) {
                 info('IP is banned: ' . $request->ip());
                 Auth::logout();
@@ -51,7 +47,6 @@ class AuthenticatedSessionController extends Controller
                 ], 401);
             }
 
-            // Check if Two Factor is enabled and IP is not verified
             if ($this->isTwoFactor($request) && !$this->isIpExists($request)) {
                 info('2FA required for user: ' . $request->user()->id);
                 $request->user()->sendTwoFactorNotification($request);
@@ -63,12 +58,10 @@ class AuthenticatedSessionController extends Controller
                 ], 200);
             }
 
-            // Clear user cache after successful login
             $userId = $request->user()->id;
             Cache::forget("user_projects_{$userId}");
             Cache::forget("dashboard_data_{$userId}");
 
-            // Log successful login
             $this->setLastLogStatusTo($request->user(), 'Logged In');
 
             $redirectUrl = session()->pull('url.intended', route('dashboard'));
@@ -102,7 +95,6 @@ class AuthenticatedSessionController extends Controller
 
             $request->session()->regenerateToken();
 
-            // Clear user cache on logout
             Cache::forget("user_projects_{$userId}");
             Cache::forget("dashboard_data_{$userId}");
 

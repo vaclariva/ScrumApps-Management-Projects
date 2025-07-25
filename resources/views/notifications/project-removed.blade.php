@@ -9,7 +9,7 @@
         </h1>
 
         <p>
-        Anda sudah tidak berkolaborasi sebagai <strong>Product Owner</strong>
+        Anda sudah tidak berkolaborasi sebagai <strong>Business Analyst</strong>
         pada proyek <strong>{{ $project->name }}</strong>, karena proyek tersebut sudah tidak aktif lagi.
         </p>
 

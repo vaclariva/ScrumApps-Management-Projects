@@ -105,7 +105,18 @@
                                             </a>
                                         </div>
                                         <div class="menu-item px-4">
-                                            <a href="{{ route('backlogs.duplicate') }}" class="menu-link px-3 bg-hover-light-secondary rounded">Duplikat Backlog</a>
+                                            <a href="#"
+                                                class="menu-link px-3 bg-hover-light-secondary rounded"
+                                                onclick="duplicateBacklog({{ $backlog->id }})">
+                                                Duplikat Backlog
+                                            </a>
+                                        </div>
+                                        <div class="menu-item px-4">
+                                            <a
+                                                href="{{ route('backlogs.download', $backlog->id) }}"
+                                                class="menu-link px-3 bg-hover-light-secondary rounded">
+                                                Unduh Backlog
+                                            </a>
                                         </div>
                                         <div class="menu-item px-4">
                                             <a href="#" class="menu-link px-3 bg-hover-light-secondary rounded"

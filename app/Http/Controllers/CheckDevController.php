@@ -43,8 +43,6 @@ class CheckDevController extends Controller
             $data['status'] = $data['status'] ?? 'inactive';
 
             $checkDev = CheckDev::create($data);
-
-            // Ambil development terkait
             $development = Development::find($checkDev->dev_id ?? $data['dev_id']);
             if ($development && $development->trello_card_id) {
                 $trelloService = new TrelloService();
@@ -84,22 +82,6 @@ class CheckDevController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(StoreCheckDevRequest $request, $id)
@@ -112,8 +94,6 @@ class CheckDevController extends Controller
 
             $checkDev = CheckDev::findOrFail($id);
             $checkDev->update($data);
-
-            // Ambil development terkait
             $development = Development::find($checkDev->dev_id ?? $data['dev_id']);
             if ($development && $development->trello_card_id) {
                 $trelloService = new TrelloService();
@@ -159,8 +139,6 @@ class CheckDevController extends Controller
         try {
             DB::beginTransaction();
             $checkDev->delete();
-
-            // Ambil development terkait
             $development = Development::find($checkDev->dev_id ?? $checkDev->dev_id);
             if ($development && $development->trello_card_id) {
                 $trelloService = new TrelloService();

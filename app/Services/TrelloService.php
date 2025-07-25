@@ -113,7 +113,6 @@ class TrelloService
             if ($response->successful()) {
                 $cardData = $response->json();
 
-                // Buat checklist jika ada
                 if (!empty($checklist)) {
                     $this->createChecklist($cardData['id'], $checklist);
                 }
@@ -139,7 +138,6 @@ class TrelloService
     private function createChecklist($cardId, $checklistItems)
     {
         try {
-            // Buat checklist
             $response = Http::post($this->baseUrl . '/checklists', [
                 'name' => 'Checklist',
                 'idCard' => $cardId,
@@ -150,7 +148,6 @@ class TrelloService
             if ($response->successful()) {
                 $checklistData = $response->json();
 
-                // Tambahkan item ke checklist
                 foreach ($checklistItems as $item) {
                     Http::post($this->baseUrl . "/checklists/{$checklistData['id']}/checkItems", [
                         'name' => $item['name'],
@@ -241,7 +238,6 @@ class TrelloService
     public function syncChecklist($cardId, $checklistGroups)
     {
         try {
-            // Hapus semua checklist lama di card
             $response = Http::get($this->baseUrl . "/cards/{$cardId}/checklists", [
                 'key' => $this->apiKey,
                 'token' => $this->token,
@@ -254,7 +250,6 @@ class TrelloService
                     ]);
                 }
             }
-            // Buat checklist baru per kategori
             foreach ($checklistGroups as $group) {
                 if (empty($group['items'])) continue;
                 $response = Http::post($this->baseUrl . '/checklists', [
@@ -303,6 +298,33 @@ class TrelloService
         } catch (\Exception $e) {
             Log::error('Error saat menambah attachment ke Trello', ['error' => $e->getMessage()]);
             return false;
+        }
+    }
+
+    /**
+     * Daftarkan webhook Trello secara otomatis
+     */
+    public function registerWebhook($callbackURL, $idModel, $description = 'Webhook ke sistemku')
+    {
+        try {
+            $response = Http::post($this->baseUrl . '/webhooks', [
+                'key' => $this->apiKey,
+                'token' => $this->token,
+                'description' => $description,
+                'callbackURL' => $callbackURL,
+                'idModel' => $idModel,
+            ]);
+            if ($response->successful()) {
+                return $response->json();
+            }
+            Log::error('Gagal mendaftarkan webhook Trello', [
+                'response' => $response->json(),
+                'status' => $response->status()
+            ]);
+            return null;
+        } catch (\Exception $e) {
+            Log::error('Error saat mendaftarkan webhook Trello', ['error' => $e->getMessage()]);
+            return null;
         }
     }
 }

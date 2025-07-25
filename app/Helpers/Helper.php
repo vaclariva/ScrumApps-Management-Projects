@@ -1,11 +1,48 @@
 <?php
 
+namespace App\Helpers;
+
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use ZipStream\Exception\FileNotFoundException;
+use App\Models\Setting;
+
+class Helper
+{
+    /**
+     * Cek apakah email host sudah dikonfigurasi
+     *
+     * @return bool
+     */
+    public static function isEmailHostConfigured(): bool
+    {
+        try {
+            $setting = Setting::first();
+
+            return $setting &&
+                   $setting->smtp_host &&
+                   $setting->smtp_username &&
+                   $setting->smtp_password &&
+                   $setting->mail_from_address &&
+                   $setting->from_name;
+        } catch (\Throwable $th) {
+            return false;
+        }
+    }
+
+    /**
+     * Dapatkan pesan error jika email host belum dikonfigurasi
+     *
+     * @return string
+     */
+    public static function getEmailHostNotConfiguredMessage(): string
+    {
+        return 'Email host belum dikonfigurasi. Silakan atur konfigurasi email terlebih dahulu di menu Email Host.';
+    }
+}
 
 if (! function_exists('formatDate')) {
     /**
@@ -191,7 +228,7 @@ if (!function_exists('translateDayNameENToID')) {
 if (!function_exists('listRoles')) {
     function listRoles()
     {
-        return ['ProductOwner', 'TeamDeveloper'];
+        return ['BusinessAnalyst', 'TeamDeveloper'];
     }
 }
 

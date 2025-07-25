@@ -17,7 +17,7 @@ class VisionBoardController extends Controller
     public function index(Request $request)
     {
         $projects = Project::with('user')->get();
-        $users = User::where('role', 'ProductOwner')->get();
+        $users = User::where('role', 'BusinessAnalyst')->get();
         $projectId = $request->query('project_id');
 
         if (!$projectId) {

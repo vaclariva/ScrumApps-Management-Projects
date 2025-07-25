@@ -21,9 +21,9 @@
                 <span class="text-muted fw-semibold tbr_search--empty d-none">Kata kunci tidak ditemukan</span>
                 <div class="d-flex justify-content-between gap-5 text-break">
                     <label class="form-check form-check-inline d-inline-flex align-items-center tbr_input--parent">
-                        <input class="form-check-input" type="checkbox" name="role[]" value="ProductOwner" data-text="ProductOwner"/>
+                        <input class="form-check-input" type="checkbox" name="role[]" value="BusinessAnalyst" data-text="BusinessAnalyst"/>
                         <span class="fw-medium ms-3 tbr_text--placeholder-active text-start">
-                            Product Owner
+                            Business Analyst
                         </span>
                     </label>
                     <label class="form-check form-check-inline d-inline-flex align-items-center tbr_input--parent">

@@ -55,7 +55,7 @@ class Project extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    public function productOwner()
+    public function businessAnalyst()
     {
         return $this->belongsTo(User::class, 'user_id');
     }

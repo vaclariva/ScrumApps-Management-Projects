@@ -33,18 +33,9 @@ $(".tbr_main_form").on("submit", function (e) {
 
             if (res?.redirect) {
                 console.log('Redirecting to:', res.redirect);
-                console.log('Current location:', window.location.href);
-
-                // Force immediate redirect
-                window.location.href = res.redirect;
-
-                // Fallback redirect after 1 second
                 setTimeout(function () {
-                    console.log('Fallback redirect to:', res.redirect);
                     window.location.href = res.redirect;
                 }, 1000);
-            } else {
-                console.log('No redirect URL in response');
             }
             submitButton.removeAttr("disabled");
             submitButton.html(submitButtonHtml);

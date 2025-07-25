@@ -15,11 +15,11 @@ var KTComponents = function () {
 			KTSwapper.init();
 			KTToggle.init();
 			KTScrolltop.init();
-			KTDialer.init();	
+			KTDialer.init();
 			KTImageInput.init();
-			KTPasswordMeter.init();	
+			KTPasswordMeter.init();
         }
-    }	
+    }
 }();
 
 // On document ready
@@ -31,10 +31,10 @@ if (document.readyState === "loading") {
 	KTComponents.init();
  }
 
- // Init page loader
-window.addEventListener("load", function() {
-    KTApp.hidePageLoading();
-});
+ // Init page loader - Disabled to prevent conflict with custom loading
+// window.addEventListener("load", function() {
+//     KTApp.hidePageLoading();
+// });
 
 // Declare KTApp for Webpack support
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {

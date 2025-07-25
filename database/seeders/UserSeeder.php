@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
                 'name' => 'Support',
                 'email' => 'support@gmail.com',
                 'password' => bcrypt('scrumapps123'),
-                'role' => 'ProductOwner',
+                'role' => 'BusinessAnalyst',
                 'phone_number' => '081234567892'
             ]);
 
@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
                 'name' => 'Clariva PO',
                 'email' => 'vaclariva@gmail.com',
                 'password' => bcrypt('scrumapps123'),
-                'role' => 'ProductOwner',
+                'role' => 'BusinessAnalyst',
                 'phone_number' => '081234567893'
             ]);
 

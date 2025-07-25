@@ -262,6 +262,13 @@ class UserController extends Controller
                 ], 403);
             }
 
+            // Cek apakah email host sudah dikonfigurasi
+            if (!\App\Helpers\Helper::isEmailHostConfigured()) {
+                return response()->json([
+                    'message' => \App\Helpers\Helper::getEmailHostNotConfiguredMessage(),
+                ], 400);
+            }
+
             $user->sendCreatePasswordNotification();
 
             return response()->json([

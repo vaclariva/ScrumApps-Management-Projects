@@ -1,5 +1,5 @@
 <div class="d-flex align-items-center gap-4">
-    @if (auth()->user()->isSuperAdmin || auth()->user()->isProductOwner)
+    @if (auth()->user()->isSuperAdmin || auth()->user()->isBusinessAnalyst)
     <a href="#"
         class="edit-team"
         data-id="{{ $team->id }}"

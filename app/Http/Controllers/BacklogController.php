@@ -46,7 +46,7 @@ class BacklogController extends Controller
      */
     public function sprintGrouped(Request $request)
     {
-        $activeIndex = $request->query('tab', 1);
+        $activeIndex = 1;
         $projectId = $request->query('project_id');
         if (!$projectId) {
             abort(404, 'Project ID tidak ditemukan');
@@ -66,7 +66,7 @@ class BacklogController extends Controller
             ->latest()
             ->get()
             ->groupBy(function ($backlog) {
-                return $backlog->sprint ? $backlog->sprint->name : 'Belum maemiliki Sprint';
+                return $backlog->sprint ? $backlog->sprint->name : 'Belum memiliki Sprint';
             });
 
         return view('backlogs.backlog-grouped', compact('users', 'project', 'backlogsGrouped', 'sprints', 'checkBacklogs', 'backlogs', 'activeIndex'));

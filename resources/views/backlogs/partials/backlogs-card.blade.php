@@ -73,7 +73,7 @@
             </div>
 
             {{-- ACTION DROPDOWN --}}
-            @if (auth()->user()->isSuperAdmin || auth()->user()->isProductOwner)
+            @if (auth()->user()->isSuperAdmin || auth()->user()->isBusinessAnalyst)
                 <div>
                     <button type="button"
                         class="btn btn-icon tbr_btn--primary rotate"

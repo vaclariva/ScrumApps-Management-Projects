@@ -19,11 +19,10 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $cacheKey = "dashboard_data_{$user->id}";
-        $cacheDuration = 300; // 5 minutes
+        $cacheDuration = 300;
 
         $dashboardData = Cache::remember($cacheKey, $cacheDuration, function () use ($user) {
         if ($user->role === 'Superadmin') {
-                // Optimized single query for superadmin
                 $projectStats = Project::selectRaw('
                     COUNT(*) as total_projects,
                     SUM(CASE WHEN status = "LATE" THEN 1 ELSE 0 END) as late_projects,
@@ -42,7 +41,6 @@ class DashboardController extends Controller
             $inProgress = Project::where('status', 'IN PROGRESS')->get();
 
         } else {
-                // Get user's project IDs in one query
                 $userProjectIds = DB::table('projects')
                     ->select('id')
                     ->where('user_id', $user->id)
@@ -72,7 +70,6 @@ class DashboardController extends Controller
                     ];
                 }
 
-                // Optimized single query for project statistics
                 $projectStats = Project::whereIn('id', $userProjectIds)
                     ->selectRaw('
                         COUNT(*) as total_projects,
@@ -126,54 +123,5 @@ class DashboardController extends Controller
         });
 
         return view('dashboard.index', $dashboardData);
-    }
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

@@ -11,7 +11,7 @@
         </h1>
 
         <p>
-            Anda adalah Product Owner dari proyek <strong>{{ $sprint->project->name }}</strong> dan saat ini sedang menjalankan sprint <strong>{{ $sprint->name }}</strong>.
+            Anda adalah Anggota Tim dari proyek <strong>{{ $sprint->project->name }}</strong> dan saat ini sedang menjalankan sprint <strong>{{ $sprint->name }}</strong>.
         </p>
 
         @if ($daysLeft < 0)

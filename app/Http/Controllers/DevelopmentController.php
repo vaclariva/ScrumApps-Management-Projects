@@ -23,7 +23,7 @@ class DevelopmentController extends Controller
     public function index(Request $request)
     {
         $projects = Project::with('user')->get();
-        $users = User::where('role', 'ProductOwner')->get();
+        $users = User::where('role', 'BusinessAnalyst')->get();
 
         $projectId = $request->query('project_id');
         if (!$projectId) {
@@ -34,7 +34,6 @@ class DevelopmentController extends Controller
         $developments = Development::where('project_id', $projectId)->latest()->get();
         $checkDevs = CheckDev::whereIn('dev_id', $developments->pluck('id'))->get();
 
-        // Inisialisasi array untuk kanban board
         $tasks = [
             '_todo'      => [],
             '_inprocess' => [],
@@ -42,7 +41,7 @@ class DevelopmentController extends Controller
             '_done'      => [],
         ];
 
-        $allTasks = []; // Menyimpan semua detail task
+        $allTasks = [];
 
         foreach ($developments as $dev) {
             $statusKey = match ($dev->status) {
@@ -53,7 +52,6 @@ class DevelopmentController extends Controller
                 default       => '_todo',
             };
 
-            // Untuk tampilan Kanban
             $tasks[$statusKey][] = [
                 'id'    => $dev->id,
                 'title' => '<span class="fw-bold">' . e($dev->name) . '</span>',
@@ -66,7 +64,6 @@ class DevelopmentController extends Controller
                 },
             ];
 
-            // Untuk JSON detail task
             $allTasks[] = [
                 'id'     => $dev->id,
                 'title'  => $dev->name,
@@ -84,7 +81,6 @@ class DevelopmentController extends Controller
             ];
         }
 
-        // Jika request berupa Ajax atau menginginkan JSON
         if ($request->wantsJson()) {
             return response()->json([
                 'message' => 'Data developments berhasil diambil',
@@ -93,16 +89,7 @@ class DevelopmentController extends Controller
             ]);
         }
 
-        // Jika biasa, return view
         return view('developments.index', compact('users', 'project', 'tasks', 'allTasks', 'developments', 'checkDevs'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -136,7 +123,6 @@ class DevelopmentController extends Controller
 
             $development = Development::create($data);
 
-            // --- Integrasi ke Trello ---
             $project = Project::find($data['project_id']);
             if ($project && $project->trello_board_id) {
                 $trelloService = new TrelloService();
@@ -155,18 +141,15 @@ class DevelopmentController extends Controller
                     $development->trello_card_id = $card['id'];
                     $development->save();
 
-                    // Tambahkan attachment link
                     if (!empty($development->link)) {
                         $trelloService->addAttachmentToCard($card['id'], $development->link, 'Link');
                     }
-                    // Tambahkan attachment file
                     if (!empty($development->file)) {
                         $fileUrl = Storage::url($development->file);
                         $trelloService->addAttachmentToCard($card['id'], asset($fileUrl), 'File');
                     }
                 }
             }
-            // --- End Integrasi Trello ---
 
             DB::commit();
 
@@ -239,13 +222,6 @@ class DevelopmentController extends Controller
         return view('developments.index', compact('kanbanData'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -256,10 +232,7 @@ class DevelopmentController extends Controller
 
         try {
             $data = $request->validated();
-
-            // Tangani pembaruan file
             if ($request->hasFile('file')) {
-                // Hapus file lama jika ada
                 if ($development->file && Storage::disk('public')->exists($development->file)) {
                     Storage::disk('public')->delete($development->file);
                 }
@@ -270,7 +243,6 @@ class DevelopmentController extends Controller
                 $directory = 'developments_files';
                 $filePath = $directory . '/' . $cleanedFileName;
 
-                // Cek jika file dengan nama yang sama sudah ada di path baru (setelah cleanup)
                 if (Storage::disk('public')->exists($filePath)) {
                     $fileNameWithoutExt = pathinfo($originalFileName, PATHINFO_FILENAME);
                     $extension = $uploadedFile->getClientOriginalExtension();
@@ -281,22 +253,15 @@ class DevelopmentController extends Controller
                 Storage::disk('public')->put($filePath, file_get_contents($uploadedFile->getRealPath()));
                 $data['file'] = $filePath;
             } elseif ($request->has('file') && $request->file == null) {
-                // Ini menangani kasus jika pengguna ingin menghapus file yang ada
-                // Dengan mengirimkan input 'file' kosong atau null dari form
                 if ($development->file && Storage::disk('public')->exists($development->file)) {
                     Storage::disk('public')->delete($development->file);
                 }
-                $data['file'] = null; // Set di database menjadi null
+                $data['file'] = null;
             } else {
-                // Jika tidak ada file baru diunggah dan tidak ada indikasi untuk menghapus file,
-                // pertahankan file yang sudah ada
-                unset($data['file']); // Hapus 'file' dari $data agar tidak menimpa dengan null
+               unset($data['file']);
             }
 
-            // Perbarui data development
             $development->update($data);
-
-            // --- Integrasi ke Trello ---
             $project = $development->project;
             if ($project && $project->trello_board_id && $development->trello_card_id) {
                 $trelloService = new TrelloService();
@@ -316,24 +281,20 @@ class DevelopmentController extends Controller
                     'idList' => $listId
                 ]);
 
-                // Tambahkan attachment link
                 if (!empty($development->link)) {
                     $trelloService->addAttachmentToCard($development->trello_card_id, $development->link, 'Link');
                 }
-                // Tambahkan attachment file
                 if (!empty($development->file)) {
                     $fileUrl = Storage::url($development->file);
                     $trelloService->addAttachmentToCard($development->trello_card_id, asset($fileUrl), 'File');
                 }
             }
-            // --- End Integrasi Trello ---
 
             DB::commit();
 
             return response()->json([
-                'message' => trans('http-statuses.201'), // 200 OK for update
+                'message' => trans('http-statuses.201'),
                 'redirect' => url()->previous(),
-                // Kembalikan data task yang diperbarui untuk refresh di frontend jika diperlukan
                 'task' => [
                     'id' => $development->id,
                     'title' => $development->name,
@@ -383,17 +344,14 @@ class DevelopmentController extends Controller
         $rawStatus = $request->input('status');
         $convertedStatus = $statusMap[$rawStatus] ?? null;
 
-        // Validasi status setelah dikonversi
         if (!in_array($convertedStatus, ['todo', 'in_progress', 'qa', 'done'])) {
             return response()->json(['message' => 'Status tidak valid.'], 422);
         }
 
-        // Cari data development berdasarkan ID
         $development = Development::findOrFail($id);
         $development->status = $convertedStatus;
         $development->save();
 
-        // --- Update status di Trello ---
         $project = $development->project;
         if ($project && $project->trello_board_id && $development->trello_card_id) {
             $trelloService = new TrelloService();
@@ -411,7 +369,6 @@ class DevelopmentController extends Controller
                 'idList' => $listId
             ]);
         }
-        // --- End update Trello ---
 
         return response()->json(['message' => 'Status berhasil diperbarui.']);
     }
@@ -427,8 +384,6 @@ class DevelopmentController extends Controller
             if ($development->file && Storage::disk('public')->exists($development->file)) {
                 Storage::disk('public')->delete($development->file);
             }
-
-            // --- Hapus card di Trello ---
             if ($development->trello_card_id) {
                 $trelloService = new TrelloService();
                 $trelloService->deleteCard($development->trello_card_id);
@@ -464,7 +419,6 @@ class DevelopmentController extends Controller
             $projectId = $request->input('project_id');
             $project = Project::findOrFail($projectId);
 
-            // Cek apakah sudah terintegrasi
             if ($project->trello_board_id) {
                 return response()->json([
                     'message' => 'Proyek sudah terintegrasi dengan Trello',
@@ -475,7 +429,6 @@ class DevelopmentController extends Controller
 
             $trelloService = new TrelloService();
 
-            // Buat board di Trello
             $boardData = $trelloService->createBoard(
                 $project->name,
                 $project->label
@@ -485,15 +438,17 @@ class DevelopmentController extends Controller
                 throw new \Exception('Gagal membuat board di Trello');
             }
 
-            // Simpan board ID ke database
             $project->trello_board_id = $boardData['id'];
             $project->save();
 
-            // Ambil semua development untuk proyek ini
+            // === Daftarkan webhook Trello secara otomatis ===
+            $callbackURL = 'https://d6e2-103-166-11-169.ngrok-free.app/api/trello/webhook'; // Ganti dengan URL ngrok kamu
+            $trelloService->registerWebhook($callbackURL, $boardData['id']);
+            // =================================================
+
             $developments = Development::where('project_id', $projectId)->get();
             $lists = $trelloService->getBoardLists($boardData['id']);
 
-            // Mapping status ke list Trello
             $statusToListMap = [
                 'todo' => 'To Do',
                 'in_progress' => 'In Progress',
@@ -501,12 +456,10 @@ class DevelopmentController extends Controller
                 'done' => 'Done'
             ];
 
-            // Buat card untuk setiap development
             foreach ($developments as $development) {
                 $listName = $statusToListMap[$development->status] ?? 'To Do';
                 $listId = collect($lists)->firstWhere('name', $listName)['id'] ?? $lists[0]['id'];
 
-                // Ambil checklist untuk development ini
                 $checklist = CheckDev::where('dev_id', $development->id)
                     ->get()
                     ->map(function($item) {
@@ -514,7 +467,6 @@ class DevelopmentController extends Controller
                     })
                     ->toArray();
 
-                // Buat card di Trello
                 $trelloService->createCard(
                     $listId,
                     $development->name,
@@ -523,7 +475,6 @@ class DevelopmentController extends Controller
                 );
             }
 
-            // Tambahkan anggota tim ke board Trello
             $teams = $project->teams;
             foreach ($teams as $team) {
                 if ($team->user && $team->user->email) {

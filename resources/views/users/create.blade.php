@@ -144,7 +144,7 @@
                             <div class="form-check form-check-custom form-check-solid">
                                 <input class="form-check-input" type="radio" name="role" id="role_product_owner" value="ProductOwner" />
                                 <label class="form-check-label" for="role_product_owner">
-                                    Product Owner
+                                    Business Analyst
                                 </label>
                             </div>
                             <div class="form-check form-check-custom form-check-solid">
@@ -155,7 +155,7 @@
                             </div>
                         </div>
                         <span class="tbr_text--icon">
-                            Product Owner sebagai pemilik dari proyek.<br/>
+                            Business Analyst sebagai pemilik dari proyek.<br/>
                             Team Developer sebagai tim pengembang proyek.
                         </span>
                     </div>

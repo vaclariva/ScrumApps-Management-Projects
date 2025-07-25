@@ -1,0 +1,85 @@
+/* Tab Navigation Styles */
+.nav-underline {
+    border-bottom: 1px solid #e1e3ea;
+}
+
+.nav-underline .nav-link {
+    color: #6c7293;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.nav-underline .nav-link:hover {
+    color: #009ef7;
+    border-bottom-color: #009ef7;
+}
+
+.nav-underline .nav-link.active {
+    color: #009ef7;
+    border-bottom-color: #009ef7;
+    font-weight: 600;
+}
+
+/* Collapse Animation */
+.collapsible {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.collapsible:hover {
+    background-color: #f8f9fa;
+}
+
+.collapsible .card-toolbar {
+    transition: transform 0.3s ease;
+}
+
+.collapsible[aria-expanded="true"] .card-toolbar {
+    transform: rotate(180deg);
+}
+
+/* Backlog Group Collapse Styles */
+.backlog-group-collapse,
+.collapse {
+    transition: all 0.3s ease;
+}
+
+.backlog-group-collapse.show,
+.collapse.show {
+    display: block;
+}
+
+.backlog-group-collapse:not(.show),
+.collapse:not(.show) {
+    display: none;
+}
+
+/* Card Styles */
+.card.shadow-sm {
+    border: 1px solid #e1e3ea;
+    transition: box-shadow 0.3s ease;
+}
+
+.card.shadow-sm:hover {
+    box-shadow: 0 0.5rem 1.5rem 0.5rem rgba(0, 0, 0, 0.075) !important;
+}
+
+/* Ensure proper spacing */
+.card-body {
+    padding: 1rem;
+}
+
+/* Backlog card styles */
+#backlog_card_ {
+    margin-bottom: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .nav-underline .nav-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+}
